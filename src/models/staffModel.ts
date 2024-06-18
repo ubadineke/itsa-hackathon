@@ -1,14 +1,14 @@
 import mongoose, { model, Document, Schema } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
-import { ObjectId } from '../types';
-import { IOrganization } from '../interfaces';
-
-const organizationSchema = new Schema<IOrganization>(
+import { IStaff } from '../interfaces';
+import Organization from './orgModel';
+const staffSchema = new Schema<IStaff>(
     {
-        name: {
-            type: String,
-            required: [true, 'Please provide your name'],
+        organization: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: Organization,
+            required: true,
         },
         email: {
             type: String,
@@ -16,10 +16,6 @@ const organizationSchema = new Schema<IOrganization>(
             unique: true,
             lowercase: true,
             validate: [validator.isEmail, 'Please provide a valid email'],
-        },
-        phone: {
-            type: String,
-            required: [true, 'Please provide your phone number'],
         },
         password: {
             type: String,
@@ -30,14 +26,14 @@ const organizationSchema = new Schema<IOrganization>(
         role: {
             type: String,
             required: true,
-            enum: ['sub-admin'],
-            default: 'sub-admin',
+            enum: ['staff'],
+            default: 'staff',
         },
     },
     { timestamps: true }
 );
 
-organizationSchema.pre<IOrganization>('save', async function (next) {
+staffSchema.pre<IStaff>('save', async function (next) {
     //ONly run this function if password was actually modified
     if (!this.isModified('password')) return next();
 
@@ -47,12 +43,13 @@ organizationSchema.pre<IOrganization>('save', async function (next) {
     next();
 });
 
-organizationSchema.methods.correctPassword = async function (
+staffSchema.methods.correctPassword = async function (
     incomingPassword: string,
     storedPassword: string
 ) {
     return await bcrypt.compare(incomingPassword, storedPassword);
 };
 
-const Organization = model<IOrganization>('Organization', organizationSchema);
-export default Organization;
+const Staff = model<IStaff>('Staff', staffSchema);
+
+export default Staff;

@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { Response } from 'express';
 import config from '../config';
 import { ObjectId } from '../types';
-import { IOrganization } from '../models/orgModel';
+import { IOrganization } from '../interfaces';
 
 export default class Jwt {
     public create(id: ObjectId) {
