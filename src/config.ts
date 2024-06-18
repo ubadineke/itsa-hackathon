@@ -7,12 +7,16 @@ interface EnvConfig {
     ENV: 'development' | 'production' | 'test';
     PORT: number;
     DB_URL: string;
+    JWT_SECRET: string;
+    JWT_EXPIRES_IN: string;
 }
 
 const envSchema = Joi.object({
     ENV: Joi.string().valid('development', 'production', 'test').required(),
     PORT: Joi.number().default(3000),
     DB_URL: Joi.string().required(),
+    JWT_SECRET: Joi.string().required(),
+    JWT_EXPIRES_IN: Joi.string().required(),
 }).unknown();
 
 const { error, value: envVars } = envSchema.validate(process.env, { allowUnknown: true });
@@ -25,6 +29,8 @@ class Config implements EnvConfig {
     ENV: 'development' | 'production' | 'test';
     PORT: number;
     DB_URL: string;
+    JWT_SECRET: string;
+    JWT_EXPIRES_IN: string;
 
     private dbConnection: Connection | null = null;
 
@@ -32,6 +38,8 @@ class Config implements EnvConfig {
         this.ENV = config.ENV;
         this.PORT = config.PORT;
         this.DB_URL = config.DB_URL;
+        this.JWT_SECRET = config.JWT_SECRET;
+        this.JWT_EXPIRES_IN = config.JWT_EXPIRES_IN;
     }
 
     public async connectToDatabase() {

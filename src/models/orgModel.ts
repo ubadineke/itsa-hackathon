@@ -3,17 +3,23 @@
 //email
 //phone
 //password
-import { model, Document, Schema } from 'mongoose';
+import mongoose, { model, Document, Schema } from 'mongoose';
 import validator from 'validator';
+import bcrypt from 'bcryptjs';
+import { ObjectId } from '../types';
 
 export interface IOrganization extends Document {
+    _id: ObjectId;
     name: string;
     email: string;
     phone: string;
     password: string;
+    role: string;
 }
 
-const OrganizationSchema = new Schema<IOrganization>(
+// console.log(IOrganization);
+
+const organizationSchema = new Schema<IOrganization>(
     {
         name: {
             type: String,
@@ -32,8 +38,24 @@ const OrganizationSchema = new Schema<IOrganization>(
             minlength: 8,
             select: false,
         },
+        role: {
+            type: String,
+            required: true,
+            enum: ['sub-admin'],
+            default: 'sub-admin',
+        },
     },
     { timestamps: true }
 );
 
-export const Organization = model<IOrganization>('Organization', OrganizationSchema);
+organizationSchema.pre<IOrganization>('save', async function (next) {
+    //ONly run this function if password was actually modified
+    if (!this.isModified('password')) return next();
+
+    //Hash the password with cost of 12
+    this.password = await bcrypt.hash(this.password, 8);
+
+    next();
+});
+
+export const Organization = model<IOrganization>('Organization', organizationSchema);

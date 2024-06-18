@@ -1,14 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { Organization } from '../models /orgModel';
-const weak = 'Praise';
-// export function login(req: Request, res: Response) {
-//     res.send('wow');
-// }
+import { Organization } from '../models/orgModel';
+import JwtFunction from '../utils/jwtToken';
 
-// export function singng(req: Request, res: Response) {
-//     res.send('wow');
-// }
-
+const Jwt = new JwtFunction();
 interface Base {
     (req: Request, res: Response, next: NextFunction): {};
     // (req: Request, res: Response, next: NextFunction): Status;
@@ -29,9 +23,12 @@ export class AuthController {
     public signup: Base = async (req, res, next) => {
         const { name, email, phone, password } = req.body;
         const organization = await Organization.create({ name, email, phone, password });
-        return res.status(200).json({
-            status: 'success',
-            organization,
-        });
+
+        Jwt.createAndSend(organization, 201, res);
+
+        // return res.status(200).json({
+        //     status: 'success',
+        //     organization,
+        // });
     };
 }
