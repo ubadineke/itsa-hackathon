@@ -25,5 +25,6 @@ export interface IStaff extends Document {
     email: string;
     password: string;
     role: string;
+    requestToken?: string;
     correctPassword(incomingPassword: string, storedPassword: string): Promise<boolean>;
 }

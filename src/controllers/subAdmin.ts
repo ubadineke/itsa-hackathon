@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import Organization from '../models/orgModel';
-import Staff from '../models/orgModel';
+import Staff from '../models/staffModel';
 import { Base, IOrganization } from '../interfaces';
 import JwtFunction from '../utils/jwtToken';
 import crypto from 'crypto';
@@ -13,12 +13,24 @@ export default class subAdmin {
 
         //Random password
         const password = crypto.randomBytes(10).toString('hex').slice(0, 10);
-        const hashedPassword = await bcrypt.hash(password, 8);
-        // const staff = await Staff.
-        // console.log(password, hashedPassword);
+        // console.log(req.user);
+        const staff = await Staff.create({
+            organization: req.user._id,
+            email,
+            password,
+        });
 
-        //email
-        //simulate login to hash
-        //return the details
+        res.status(200).json({
+            status: 'success',
+            logins: {
+                email,
+                password,
+            },
+        });
+        //send mail to staff
+    };
+
+    collectInfo: Base = async (req, res, next) => {
+        console.log(req.body);
     };
 }

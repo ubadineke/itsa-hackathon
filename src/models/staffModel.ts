@@ -29,6 +29,9 @@ const staffSchema = new Schema<IStaff>(
             enum: ['staff'],
             default: 'staff',
         },
+        requestToken: {
+            type: String,
+        },
     },
     { timestamps: true }
 );
