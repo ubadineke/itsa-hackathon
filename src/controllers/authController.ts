@@ -22,7 +22,6 @@ export default class AuthController {
 
     public login: Base = async (req, res, next) => {
         const { email, password, role } = req.body;
-
         if (!email || !password) {
             return res.status(400).json({
                 status: 'fail',
@@ -30,30 +29,31 @@ export default class AuthController {
             });
         }
 
-        let user: IOrganization | null;
+        let user: IOrganization | null = null;
 
         if (role === 'sub-admin') {
-            user = await Organization.findOne({ email }).select('+password');
+            user = await Organization.findOne({ email: email }).select('+password');
         } else if (role === 'staff') {
             user = await Staff.findOne({ email }).select('+password');
-
-            if (!user || !(await user.correctPassword(password, user.password))) {
-                return res.status(401).json({
-                    status: 'fail',
-                    message: 'Incorrect email or password',
-                });
-            }
-
-            if (user.role !== role) {
-                return res.status(400).json({
-                    status: 'fail',
-                    message: `No ${role} record found`,
-                });
-            }
-
-            Jwt.createAndSend(user, 200, res);
         }
+
+        if (!user || !(await user.correctPassword(password, user.password))) {
+            return res.status(401).json({
+                status: 'fail',
+                message: 'Incorrect email or password',
+            });
+        }
+
+        if (user.role !== role) {
+            return res.status(400).json({
+                status: 'fail',
+                message: `No ${role} record found`,
+            });
+        }
+
+        Jwt.createAndSend(user, 200, res);
     };
+
     public protect = (role: string) => {
         return async (req: Request, res: Response, next: NextFunction) => {
             this.role = role;
