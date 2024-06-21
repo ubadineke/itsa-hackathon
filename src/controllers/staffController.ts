@@ -33,7 +33,7 @@ export default class StaffController {
     };
 
     getSingleDevice: Base = async (req, res) => {
-        const { id } = req.body;
+        const { id } = req.params;
         const device = await Device.findById({ _id: id });
         if (!device) return res.status(404).json('No device recorded');
         res.status(200).json({

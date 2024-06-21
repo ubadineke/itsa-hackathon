@@ -10,6 +10,6 @@ const Staff = new StaffController();
 router.use(Auth.protect('staff'));
 router.get('/device-count', Staff.deviceCount);
 router.get('/devices', Staff.listDevices);
-router.get('/device', Staff.getSingleDevice);
+router.get('/device/:id', Staff.getSingleDevice);
 
 export default router;
