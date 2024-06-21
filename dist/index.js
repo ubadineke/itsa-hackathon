@@ -9,6 +9,7 @@ const config_1 = __importDefault(require("./config"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const subAdmin_1 = __importDefault(require("./routes/subAdmin"));
 const staffRoutes_1 = __importDefault(require("./routes/staffRoutes"));
+const superAdmin_1 = __importDefault(require("./routes/superAdmin"));
 dotenv_1.default.config();
 console.log(process.env.DB);
 // global.env = process.env.DB;
@@ -19,6 +20,7 @@ app.use(express_1.default.json());
 app.use('/api', authRoutes_1.default);
 app.use('/api/sub-admin', subAdmin_1.default);
 app.use('/api/staff', staffRoutes_1.default);
+app.use('/api/super-admin', superAdmin_1.default);
 // app.get('/', (req: Request, res: Response) => {
 //     console.log('done');
 // });

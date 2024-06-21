@@ -14,24 +14,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const staffModel_1 = __importDefault(require("../models/staffModel"));
 const crypto_1 = __importDefault(require("crypto"));
+const deviceModel_1 = __importDefault(require("../models/deviceModel"));
 class subAdmin {
     constructor() {
         this.createStaff = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { email } = req.body;
-                if (!email)
+                const { name, email } = req.body;
+                if (!name || !email)
                     return res.status(400).json('Provide staff email');
                 //Random password
                 const password = crypto_1.default.randomBytes(10).toString('hex').slice(0, 10);
                 // console.log(req.user);
                 const staff = yield staffModel_1.default.create({
                     organization: req.user._id,
+                    name,
                     email,
                     password,
                 });
                 res.status(200).json({
                     status: 'success',
                     logins: {
+                        name,
                         email,
                         password,
                     },
@@ -45,7 +48,7 @@ class subAdmin {
         });
         this.newDeviceRequest = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const randomString = crypto_1.default.randomBytes(6).toString('hex').slice(0, 6);
+                const randomString = crypto_1.default.randomBytes(10).toString('hex').slice(0, 10);
                 yield staffModel_1.default.findOneAndUpdate({ email: req.body.email }, { requestToken: randomString }, { new: true });
                 res.status(200).json({
                     status: 'success',
@@ -59,19 +62,50 @@ class subAdmin {
         });
         this.collectInfo = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { email, setupId } = req.body;
+                const { email, setupId, name, system, osInfo, mem, cpu, battery } = req.body;
                 console.log(email, setupId);
                 const staff = yield staffModel_1.default.findOne({ email: email });
                 if (!staff)
                     return res.status(400).json('Staff Record not found');
                 if (staff.requestToken !== setupId)
                     return res.status(400).json('Setup id not correct or not recorded');
-                console.log(req.body);
+                const device = yield deviceModel_1.default.create({
+                    staff,
+                    setupId,
+                    name,
+                    system,
+                    osInfo,
+                    cpu,
+                    mem,
+                    battery,
+                });
+                res.status(200).json({
+                    status: 'success',
+                    device,
+                });
             }
             catch (err) {
                 console.log(err);
                 res.status(500).json(err);
             }
+        });
+        this.getAllDevices = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const devices = yield deviceModel_1.default.countDocuments();
+            res.status(200).json({
+                status: 'success',
+                devices,
+            });
+        });
+        this.setupStatus = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            const { setupId } = req.body;
+            const { _id } = req.user;
+            const device = yield deviceModel_1.default.findOne({ setupId });
+            if (!device)
+                return res.status(404).json('Not found');
+            res.status(200).json({
+                status: 'success',
+                device,
+            });
         });
     }
 }

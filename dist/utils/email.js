@@ -12,24 +12,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const technicianModel_1 = __importDefault(require("../models/technicianModel"));
-class SuperAdminController {
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const config_1 = __importDefault(require("../config"));
+// Define the EmailSender class
+class EmailSender {
     constructor() {
-        //create technician
-        this.createTechnician = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { name, email, phone, state, lga } = req.body;
-                const technician = yield technicianModel_1.default.create({ name, email, phone, state, lga });
-                res.status(200).json({
-                    status: 'success',
-                    technician,
-                });
-            }
-            catch (err) {
-                console.log(err);
-                res.status(400).json(err);
-            }
+        this.transporter = nodemailer_1.default.createTransport({
+            service: 'gmail',
+            auth: {
+                user: config_1.default.GMAIL_NAME,
+                pass: config_1.default.GMAIL_PASSWORD,
+            },
+        });
+    }
+    // Method to send the email
+    sendEmail(options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mailOptions = {
+                from: 'ITSA DEMO <itsahackathon3@gmail.com>',
+                to: options.email,
+                subject: options.subject,
+                text: options.message,
+                // html: '',
+            };
+            yield this.transporter.sendMail(mailOptions);
         });
     }
 }
-exports.default = SuperAdminController;
+exports.default = EmailSender;

@@ -45,6 +45,8 @@ const envSchema = Joi.object({
     DB_URL: Joi.string().required(),
     JWT_SECRET: Joi.string().required(),
     JWT_EXPIRES_IN: Joi.string().required(),
+    GMAIL_NAME: Joi.string().required(),
+    GMAIL_PASSWORD: Joi.string().required(),
 }).unknown();
 const { error, value: envVars } = envSchema.validate(process.env, { allowUnknown: true });
 if (error) {
@@ -58,6 +60,8 @@ class Config {
         this.DB_URL = config.DB_URL;
         this.JWT_SECRET = config.JWT_SECRET;
         this.JWT_EXPIRES_IN = config.JWT_EXPIRES_IN;
+        this.GMAIL_NAME = config.GMAIL_NAME;
+        this.GMAIL_PASSWORD = config.GMAIL_PASSWORD;
     }
     connectToDatabase() {
         return __awaiter(this, void 0, void 0, function* () {

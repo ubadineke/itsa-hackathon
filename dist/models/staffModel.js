@@ -45,6 +45,10 @@ const staffSchema = new mongoose_1.Schema({
         ref: orgModel_1.default,
         required: true,
     },
+    name: {
+        type: String,
+        required: [true, 'Please provide your name'],
+    },
     email: {
         type: String,
         required: [true, 'Please provide your email address'],
@@ -66,6 +70,7 @@ const staffSchema = new mongoose_1.Schema({
     },
     requestToken: {
         type: String,
+        unique: true,
     },
 }, { timestamps: true });
 staffSchema.pre('save', function (next) {

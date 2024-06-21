@@ -18,6 +18,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const jwtToken_1 = __importDefault(require("../utils/jwtToken"));
 const util_1 = require("util");
 const config_1 = __importDefault(require("../config"));
+const superAdmin_1 = __importDefault(require("../models/superAdmin"));
 const Jwt = new jwtToken_1.default();
 class AuthController {
     constructor() {
@@ -32,6 +33,16 @@ class AuthController {
                 res.status(500).json(err);
             }
         });
+        // public signup: Base = async (req, res, next) => {
+        //     try {
+        //         const { email, password } = req.body;
+        //         const admin = await Admin.create({ email, password });
+        //         Jwt.createAndSend(admin, 201, res);
+        //     } catch (err) {
+        //         console.log(err);
+        //         res.status(500).json(err);
+        //     }
+        // };
         this.login = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { email, password, role } = req.body;
@@ -47,6 +58,9 @@ class AuthController {
                 }
                 else if (role === 'staff') {
                     user = yield staffModel_1.default.findOne({ email }).select('+password');
+                }
+                else if (role === 'super-admin') {
+                    user = yield superAdmin_1.default.findOne({ email }).select('+password');
                 }
                 else {
                     return res.status(404).json('Specify correct role');
@@ -99,8 +113,10 @@ class AuthController {
                     else if (this.role === 'staff') {
                         currentUser = yield staffModel_1.default.findById(decoded.id);
                     }
+                    else if (this.role === 'super-admin') {
+                        currentUser = yield superAdmin_1.default.findById(decoded.id);
+                    }
                     else {
-                        console.log('check');
                         return res.status(400).json('Provide the accepted user types');
                     }
                     if (!currentUser) {
