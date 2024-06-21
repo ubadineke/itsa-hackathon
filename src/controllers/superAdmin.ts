@@ -12,7 +12,7 @@ export default class SuperAdminController {
             });
         } catch (err) {
             console.log(err);
-            res.status(400).json({});
+            res.status(400).json(err);
         }
     };
 }

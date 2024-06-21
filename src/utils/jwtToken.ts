@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { Response } from 'express';
 import config from '../config';
 import { ObjectId } from '../types';
-import { IOrganization } from '../interfaces';
+import { IAdmin, IOrganization } from '../interfaces';
 
 export default class Jwt {
     public create(id: ObjectId) {
@@ -11,7 +11,7 @@ export default class Jwt {
         });
     }
 
-    public createAndSend(user: IOrganization, statusCode: number, res: Response) {
+    public createAndSend(user: IOrganization | IAdmin, statusCode: number, res: Response) {
         const token = this.create(user._id);
         user.password = '';
         res.status(statusCode).json({

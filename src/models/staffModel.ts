@@ -10,6 +10,10 @@ const staffSchema = new Schema<IStaff>(
             ref: Organization,
             required: true,
         },
+        name: {
+            type: String,
+            required: [true, 'Please provide your name'],
+        },
         email: {
             type: String,
             required: [true, 'Please provide your email address'],
@@ -31,6 +35,7 @@ const staffSchema = new Schema<IStaff>(
         },
         requestToken: {
             type: String,
+            unique: true,
         },
     },
     { timestamps: true }

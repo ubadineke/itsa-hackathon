@@ -31,6 +31,7 @@ export interface IStaff extends Document {
 }
 
 export interface IAdmin extends Document {
+    _id: ObjectId;
     email: string;
     password: string;
     role: string;
@@ -38,6 +39,7 @@ export interface IAdmin extends Document {
 }
 
 export interface ITechnician extends Document {
+    _id: ObjectId;
     name: string;
     email: string;
     phone: string;
@@ -48,10 +50,18 @@ export interface ITechnician extends Document {
 
 export interface IDevice extends Document {
     staff: ObjectId;
+    setupId: string;
     name: string;
     system: {};
     osInfo: {};
     cpu: {};
     mem: {};
     battery: {};
+}
+
+export interface IRequest extends Document {
+    staff: ObjectId;
+    device: string;
+    description: string;
+    technician: ObjectId;
 }

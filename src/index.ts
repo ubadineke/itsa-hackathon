@@ -4,6 +4,7 @@ import Config from './config';
 import authRouter from './routes/authRoutes';
 import subAdminRouter from './routes/subAdmin';
 import staffRouter from './routes/staffRoutes';
+import superAdminRouter from './routes/superAdmin';
 
 dotenv.config();
 console.log(process.env.DB);
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api', authRouter);
 app.use('/api/sub-admin', subAdminRouter);
 app.use('/api/staff', staffRouter);
+app.use('/api/super-admin', superAdminRouter);
 // app.get('/', (req: Request, res: Response) => {
 //     console.log('done');
 // });

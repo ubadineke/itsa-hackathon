@@ -37,7 +37,7 @@ export default class subAdmin {
 
     newDeviceRequest: Base = async (req, res, next) => {
         try {
-            const randomString = crypto.randomBytes(6).toString('hex').slice(0, 6);
+            const randomString = crypto.randomBytes(10).toString('hex').slice(0, 10);
             await Staff.findOneAndUpdate(
                 { email: req.body.email },
                 { requestToken: randomString },
@@ -63,7 +63,16 @@ export default class subAdmin {
             if (staff.requestToken !== setupId)
                 return res.status(400).json('Setup id not correct or not recorded');
 
-            const device = await Device.create({ staff, name, system, osInfo, cpu, mem, battery });
+            const device = await Device.create({
+                staff,
+                setupId,
+                name,
+                system,
+                osInfo,
+                cpu,
+                mem,
+                battery,
+            });
             res.status(200).json({
                 status: 'success',
                 device,
@@ -79,6 +88,17 @@ export default class subAdmin {
         res.status(200).json({
             status: 'success',
             devices,
+        });
+    };
+
+    setupStatus: Base = async (req, res, next) => {
+        const { setupId } = req.body;
+        const { _id } = req.user;
+        const device = await Device.findOne({ setupId });
+        if (!device) return res.status(404).json('Not found');
+        res.status(200).json({
+            status: 'success',
+            device,
         });
     };
 }

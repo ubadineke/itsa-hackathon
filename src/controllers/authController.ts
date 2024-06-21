@@ -7,6 +7,7 @@ import JwtFunction from '../utils/jwtToken';
 import { promisify } from 'util';
 import Config from '../config';
 import { verify } from 'crypto';
+import Admin from '../models/superAdmin';
 
 const Jwt = new JwtFunction();
 
@@ -24,6 +25,17 @@ export default class AuthController {
             res.status(500).json(err);
         }
     };
+    // public signup: Base = async (req, res, next) => {
+    //     try {
+    //         const { email, password } = req.body;
+    //         const admin = await Admin.create({ email, password });
+
+    //         Jwt.createAndSend(admin, 201, res);
+    //     } catch (err) {
+    //         console.log(err);
+    //         res.status(500).json(err);
+    //     }
+    // };
 
     public login: Base = async (req, res, next) => {
         try {
@@ -41,6 +53,8 @@ export default class AuthController {
                 user = await Organization.findOne({ email: email }).select('+password');
             } else if (role === 'staff') {
                 user = await Staff.findOne({ email }).select('+password');
+            } else if (role === 'super-admin') {
+                user = await Admin.findOne({ email }).select('+password');
             } else {
                 return res.status(404).json('Specify correct role');
             }
@@ -102,8 +116,9 @@ export default class AuthController {
                     currentUser = await Organization.findById(decoded.id);
                 } else if (this.role === 'staff') {
                     currentUser = await Staff.findById(decoded.id);
+                } else if (this.role === 'super-admin') {
+                    currentUser = await Admin.findById(decoded.id);
                 } else {
-                    console.log('check');
                     return res.status(400).json('Provide the accepted user types');
                 }
                 if (!currentUser) {
