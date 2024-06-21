@@ -15,8 +15,8 @@ const app = express();
 
 app.use(express.json());
 app.use('/api', authRouter);
-app.use('/api', subAdminRouter);
-app.use('/api', staffRouter);
+app.use('/api/sub-admin', subAdminRouter);
+app.use('/api/staff', staffRouter);
 // app.get('/', (req: Request, res: Response) => {
 //     console.log('done');
 // });

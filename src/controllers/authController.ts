@@ -41,6 +41,8 @@ export default class AuthController {
                 user = await Organization.findOne({ email: email }).select('+password');
             } else if (role === 'staff') {
                 user = await Staff.findOne({ email }).select('+password');
+            } else {
+                return res.status(404).json('Specify correct role');
             }
 
             if (!user || !(await user.correctPassword(password, user.password))) {
@@ -105,7 +107,11 @@ export default class AuthController {
                     return res.status(400).json('Provide the accepted user types');
                 }
                 if (!currentUser) {
-                    return res.status(401).json('The user belonging to this token does not exist');
+                    return res
+                        .status(401)
+                        .json(
+                            "The user belonging to this token does not exist/you're not permitted to accesss this feature"
+                        );
                     //     // return next(new AppError('The user belonging to this token does not exist', 401));
                 }
                 // // //store user details

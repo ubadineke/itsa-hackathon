@@ -22,9 +22,25 @@ export interface IOrganization extends Document {
 export interface IStaff extends Document {
     _id: ObjectId;
     organization: ObjectId;
+    name: string;
     email: string;
     password: string;
     role: string;
     requestToken?: string;
     correctPassword(incomingPassword: string, storedPassword: string): Promise<boolean>;
+}
+
+export interface IAdmin extends Document {
+    email: string;
+    password: string;
+    role: string;
+    correctPassword(incomingPassword: string, storedPassword: string): Promise<boolean>;
+}
+
+export interface ITechnician extends Document {
+    name: string;
+    email: string;
+    password: string;
+    state: string;
+    lga: string;
 }

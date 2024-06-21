@@ -6,6 +6,8 @@ const Auth = new AuthController();
 
 const router = Router();
 const subAdmin = new subAdministrator();
-router.post('/createStaff', Auth.protect('sub-admin'), subAdmin.createStaff);
+router.post('/create-staff', Auth.protect('sub-admin'), subAdmin.createStaff);
+router.post('/new-request', Auth.protect('sub-admin'), subAdmin.newDeviceRequest);
+router.post('/register-device', subAdmin.collectInfo);
 
 export default router;
