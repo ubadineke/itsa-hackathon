@@ -40,7 +40,18 @@ export interface IAdmin extends Document {
 export interface ITechnician extends Document {
     name: string;
     email: string;
+    phone: string;
     password: string;
     state: string;
     lga: string;
+}
+
+export interface IDevice extends Document {
+    staff: ObjectId;
+    name: string;
+    system: {};
+    osInfo: {};
+    cpu: {};
+    mem: {};
+    battery: {};
 }

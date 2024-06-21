@@ -6,8 +6,10 @@ const Auth = new AuthController();
 
 const router = Router();
 const subAdmin = new subAdministrator();
-router.post('/create-staff', Auth.protect('sub-admin'), subAdmin.createStaff);
-router.post('/new-request', Auth.protect('sub-admin'), subAdmin.newDeviceRequest);
 router.post('/register-device', subAdmin.collectInfo);
+router.use(Auth.protect('sub-admin'));
+router.post('/create-staff', subAdmin.createStaff);
+router.post('/new-request', subAdmin.newDeviceRequest);
+router.get('/enrolled-devices', subAdmin.getAllDevices);
 
 export default router;

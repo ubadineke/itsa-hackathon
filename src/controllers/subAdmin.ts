@@ -1,21 +1,21 @@
 import Organization from '../models/orgModel';
 import Staff from '../models/staffModel';
-import { Base, IOrganization } from '../interfaces';
-import JwtFunction from '../utils/jwtToken';
+import { Base } from '../interfaces';
 import crypto from 'crypto';
-import bcrypt from 'bcryptjs';
+import Device from '../models/deviceModel';
 
 export default class subAdmin {
     createStaff: Base = async (req, res, next) => {
         try {
-            const { email } = req.body;
-            if (!email) return res.status(400).json('Provide staff email');
+            const { name, email } = req.body;
+            if (!name || !email) return res.status(400).json('Provide staff email');
 
             //Random password
             const password = crypto.randomBytes(10).toString('hex').slice(0, 10);
             // console.log(req.user);
             const staff = await Staff.create({
                 organization: req.user._id,
+                name,
                 email,
                 password,
             });
@@ -23,6 +23,7 @@ export default class subAdmin {
             res.status(200).json({
                 status: 'success',
                 logins: {
+                    name,
                     email,
                     password,
                 },
@@ -54,17 +55,30 @@ export default class subAdmin {
 
     collectInfo: Base = async (req, res, next) => {
         try {
-            const { email, setupId } = req.body;
+            const { email, setupId, name, system, osInfo, mem, cpu, battery } = req.body;
             console.log(email, setupId);
+
             const staff = await Staff.findOne({ email: email });
             if (!staff) return res.status(400).json('Staff Record not found');
             if (staff.requestToken !== setupId)
                 return res.status(400).json('Setup id not correct or not recorded');
 
-            console.log(req.body);
+            const device = await Device.create({ staff, name, system, osInfo, cpu, mem, battery });
+            res.status(200).json({
+                status: 'success',
+                device,
+            });
         } catch (err) {
             console.log(err);
             res.status(500).json(err);
         }
+    };
+
+    getAllDevices: Base = async (req, res, next) => {
+        const devices = await Device.countDocuments();
+        res.status(200).json({
+            status: 'success',
+            devices,
+        });
     };
 }
