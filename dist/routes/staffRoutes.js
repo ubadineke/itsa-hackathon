@@ -9,6 +9,4 @@ const staffController_1 = __importDefault(require("../controllers/staffControlle
 const Auth = new authController_1.default();
 const router = (0, express_1.Router)();
 const Staff = new staffController_1.default();
-router.post('/staff/new-request', Auth.protect('staff'), Staff.newDeviceRequest);
-router.post('/staff/register-device', Staff.collectInfo);
 exports.default = router;

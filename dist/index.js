@@ -17,8 +17,8 @@ config_1.default.connectToDatabase();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use('/api', authRoutes_1.default);
-app.use('/api', subAdmin_1.default);
-app.use('/api', staffRoutes_1.default);
+app.use('/api/sub-admin', subAdmin_1.default);
+app.use('/api/staff', staffRoutes_1.default);
 // app.get('/', (req: Request, res: Response) => {
 //     console.log('done');
 // });

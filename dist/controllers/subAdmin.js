@@ -43,6 +43,36 @@ class subAdmin {
                 res.status(500).json(err);
             }
         });
+        this.newDeviceRequest = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const randomString = crypto_1.default.randomBytes(6).toString('hex').slice(0, 6);
+                yield staffModel_1.default.findOneAndUpdate({ email: req.body.email }, { requestToken: randomString }, { new: true });
+                res.status(200).json({
+                    status: 'success',
+                    setupId: randomString,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.collectInfo = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { email, setupId } = req.body;
+                console.log(email, setupId);
+                const staff = yield staffModel_1.default.findOne({ email: email });
+                if (!staff)
+                    return res.status(400).json('Staff Record not found');
+                if (staff.requestToken !== setupId)
+                    return res.status(400).json('Setup id not correct or not recorded');
+                console.log(req.body);
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
     }
 }
 exports.default = subAdmin;

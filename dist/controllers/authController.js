@@ -48,6 +48,9 @@ class AuthController {
                 else if (role === 'staff') {
                     user = yield staffModel_1.default.findOne({ email }).select('+password');
                 }
+                else {
+                    return res.status(404).json('Specify correct role');
+                }
                 if (!user || !(yield user.correctPassword(password, user.password))) {
                     return res.status(401).json({
                         status: 'fail',
@@ -101,7 +104,9 @@ class AuthController {
                         return res.status(400).json('Provide the accepted user types');
                     }
                     if (!currentUser) {
-                        return res.status(401).json('The user belonging to this token does not exist');
+                        return res
+                            .status(401)
+                            .json("The user belonging to this token does not exist/you're not permitted to accesss this feature");
                         //     // return next(new AppError('The user belonging to this token does not exist', 401));
                     }
                     // // //store user details

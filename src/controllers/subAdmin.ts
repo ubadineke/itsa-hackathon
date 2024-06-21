@@ -38,7 +38,7 @@ export default class subAdmin {
         try {
             const randomString = crypto.randomBytes(6).toString('hex').slice(0, 6);
             await Staff.findOneAndUpdate(
-                req.body.email,
+                { email: req.body.email },
                 { requestToken: randomString },
                 { new: true }
             );
