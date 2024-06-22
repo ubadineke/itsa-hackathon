@@ -3,6 +3,9 @@ import Staff from '../models/staffModel';
 import { Base } from '../interfaces';
 import crypto from 'crypto';
 import Device from '../models/deviceModel';
+import EmailSender from '../utils/email';
+
+const Email = new EmailSender();
 
 export default class subAdmin {
     createStaff: Base = async (req, res, next) => {
@@ -12,14 +15,18 @@ export default class subAdmin {
 
             //Random password
             const password = crypto.randomBytes(10).toString('hex').slice(0, 10);
-            // console.log(req.user);
             const staff = await Staff.create({
                 organization: req.user._id,
                 name,
                 email,
                 password,
             });
-
+            const message = `email: ${email} \n password: ${password}`;
+            await Email.send({
+                email,
+                subject: 'Your login credentials for the ITSA Dashboard',
+                message,
+            });
             res.status(200).json({
                 status: 'success',
                 logins: {
@@ -27,7 +34,6 @@ export default class subAdmin {
                     email,
                     password,
                 },
-                //send mail to staff
             });
         } catch (err) {
             console.log(err);
@@ -119,6 +125,7 @@ export default class subAdmin {
             if (!staffs) return res.status(404).json('No staffs recorded');
             res.status(200).json({
                 status: 'success',
+                count: staffs.length,
                 staffs,
             });
         } catch (err) {

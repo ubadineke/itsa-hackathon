@@ -26,7 +26,7 @@ class EmailSender {
         });
     }
     // Method to send the email
-    sendEmail(options) {
+    send(options) {
         return __awaiter(this, void 0, void 0, function* () {
             const mailOptions = {
                 from: 'ITSA DEMO <itsahackathon3@gmail.com>',

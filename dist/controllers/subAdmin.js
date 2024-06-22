@@ -16,6 +16,8 @@ const orgModel_1 = __importDefault(require("../models/orgModel"));
 const staffModel_1 = __importDefault(require("../models/staffModel"));
 const crypto_1 = __importDefault(require("crypto"));
 const deviceModel_1 = __importDefault(require("../models/deviceModel"));
+const email_1 = __importDefault(require("../utils/email"));
+const Email = new email_1.default();
 class subAdmin {
     constructor() {
         this.createStaff = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -25,12 +27,17 @@ class subAdmin {
                     return res.status(400).json('Provide staff email');
                 //Random password
                 const password = crypto_1.default.randomBytes(10).toString('hex').slice(0, 10);
-                // console.log(req.user);
                 const staff = yield staffModel_1.default.create({
                     organization: req.user._id,
                     name,
                     email,
                     password,
+                });
+                const message = `email: ${email} \n password: ${password}`;
+                yield Email.send({
+                    email,
+                    subject: 'Your login credentials for the ITSA Dashboard',
+                    message,
                 });
                 res.status(200).json({
                     status: 'success',
@@ -39,7 +46,6 @@ class subAdmin {
                         email,
                         password,
                     },
-                    //send mail to staff
                 });
             }
             catch (err) {
@@ -128,6 +134,7 @@ class subAdmin {
                     return res.status(404).json('No staffs recorded');
                 res.status(200).json({
                     status: 'success',
+                    count: staffs.length,
                     staffs,
                 });
             }

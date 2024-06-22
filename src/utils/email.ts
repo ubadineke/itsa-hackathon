@@ -23,7 +23,7 @@ export default class EmailSender {
     }
 
     // Method to send the email
-    async sendEmail(options: EmailOptions): Promise<void> {
+    async send(options: EmailOptions): Promise<void> {
         const mailOptions = {
             from: 'ITSA DEMO <itsahackathon3@gmail.com>',
             to: options.email,
