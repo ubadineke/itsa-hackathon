@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const orgModel_1 = __importDefault(require("../models/orgModel"));
 const staffModel_1 = __importDefault(require("../models/staffModel"));
 const crypto_1 = __importDefault(require("crypto"));
 const deviceModel_1 = __importDefault(require("../models/deviceModel"));
@@ -91,22 +92,88 @@ class subAdmin {
             }
         });
         this.getAllDevices = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            const devices = yield deviceModel_1.default.countDocuments();
-            res.status(200).json({
-                status: 'success',
-                devices,
-            });
+            try {
+                const devices = yield deviceModel_1.default.countDocuments();
+                res.status(200).json({
+                    status: 'success',
+                    devices,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
         });
         this.setupStatus = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            const { setupId } = req.body;
-            const { _id } = req.user;
-            const device = yield deviceModel_1.default.findOne({ setupId });
-            if (!device)
-                return res.status(404).json('Not found');
-            res.status(200).json({
-                status: 'success',
-                device,
-            });
+            try {
+                const { setupId } = req.params;
+                const { _id } = req.user;
+                const device = yield deviceModel_1.default.findOne({ setupId });
+                if (!device)
+                    return res.status(404).json('Not found');
+                res.status(200).json({
+                    status: 'success',
+                    device,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.getAllStaffs = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const staffs = yield staffModel_1.default.find({ organization: req.user._id });
+                if (!staffs)
+                    return res.status(404).json('No staffs recorded');
+                res.status(200).json({
+                    status: 'success',
+                    staffs,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.deleteStaff = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                yield staffModel_1.default.findByIdAndDelete(id);
+                res.status(204).send;
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.getProfile = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const profile = req.user;
+                res.status(200).json({
+                    status: 'success',
+                    profile,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.updateProfile = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { _id } = req.user;
+                const { name, phone } = req.body;
+                const profile = yield orgModel_1.default.findByIdAndUpdate(_id, { name, phone }, { new: true });
+                res.status(200).json({
+                    status: 'success',
+                    profile,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
         });
     }
 }

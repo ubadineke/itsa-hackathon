@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //get long. and lat. for a technician
 const axios_1 = __importDefault(require("axios"));
+const config_1 = __importDefault(require("../config"));
 const technician = {
     state: 'Akwa Ibom',
     lga: 'Etinan',
@@ -31,8 +32,7 @@ class Geo {
                 text = text + str;
             }
             text = text + 'nigeria';
-            const apiKey = '7cc37674afab4d20b1080461e5f050fc';
-            const response = yield axios_1.default.get(`https://api.geoapify.com/v1/geocode/search?text=${text}&format=json&apiKey=${apiKey}`);
+            const response = yield axios_1.default.get(`https://api.geoapify.com/v1/geocode/search?text=${text}&format=json&apiKey=${config_1.default.GEO_API_KEY}`);
             const result = response.data.results[0];
             const { lon, lat } = result;
             return [lon, lat];
