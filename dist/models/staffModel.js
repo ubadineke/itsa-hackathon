@@ -70,7 +70,6 @@ const staffSchema = new mongoose_1.Schema({
     },
     requestToken: {
         type: String,
-        unique: true,
     },
 }, { timestamps: true });
 staffSchema.pre('save', function (next) {

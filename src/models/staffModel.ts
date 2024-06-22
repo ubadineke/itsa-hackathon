@@ -35,7 +35,6 @@ const staffSchema = new Schema<IStaff>(
         },
         requestToken: {
             type: String,
-            unique: true,
         },
     },
     { timestamps: true }
