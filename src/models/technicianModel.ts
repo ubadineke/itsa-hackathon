@@ -17,6 +17,9 @@ const technicianSchema = new Schema<ITechnician>(
             lowercase: true,
             validate: [validator.isEmail, 'Please provide a valid email'],
         },
+        phone: {
+            type: String,
+        },
         state: {
             type: String,
             required: [true, 'Please provide your state '],
@@ -25,9 +28,22 @@ const technicianSchema = new Schema<ITechnician>(
             type: String,
             required: [true, 'Please provide the lga you reside '],
         },
+        location: {
+            type: {
+                type: String,
+                enum: ['Point'],
+                required: true,
+            },
+            coordinates: {
+                type: [Number],
+                required: true,
+            },
+        },
     },
     { timestamps: true }
 );
+
+technicianSchema.index({ location: '2dsphere' });
 
 const Technician = model<ITechnician>('Technician', technicianSchema);
 export default Technician;

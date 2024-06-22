@@ -46,6 +46,10 @@ export interface ITechnician extends Document {
     password: string;
     state: string;
     lga: string;
+    location: {
+        type: string;
+        coordinates: [];
+    };
 }
 
 export interface IDevice extends Document {

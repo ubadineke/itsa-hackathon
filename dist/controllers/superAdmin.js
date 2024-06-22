@@ -13,13 +13,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const technicianModel_1 = __importDefault(require("../models/technicianModel"));
+const geo_1 = __importDefault(require("../utils/geo"));
 class SuperAdminController {
     constructor() {
         //create technician
         this.createTechnician = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { name, email, phone, state, lga } = req.body;
-                const technician = yield technicianModel_1.default.create({ name, email, phone, state, lga });
+                const coordinates = yield geo_1.default.getCoordinates(state, lga);
+                const location = {
+                    type: 'Point',
+                    coordinates: [...coordinates],
+                };
+                const technician = yield technicianModel_1.default.create({
+                    name,
+                    email,
+                    phone,
+                    state,
+                    lga,
+                    location,
+                });
+                console.log(technician);
                 res.status(200).json({
                     status: 'success',
                     technician,

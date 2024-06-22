@@ -17,6 +17,9 @@ const technicianSchema = new mongoose_1.Schema({
         lowercase: true,
         validate: [validator_1.default.isEmail, 'Please provide a valid email'],
     },
+    phone: {
+        type: String,
+    },
     state: {
         type: String,
         required: [true, 'Please provide your state '],
@@ -25,6 +28,18 @@ const technicianSchema = new mongoose_1.Schema({
         type: String,
         required: [true, 'Please provide the lga you reside '],
     },
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true,
+        },
+        coordinates: {
+            type: [Number],
+            required: true,
+        },
+    },
 }, { timestamps: true });
+technicianSchema.index({ location: '2dsphere' });
 const Technician = (0, mongoose_1.model)('Technician', technicianSchema);
 exports.default = Technician;
