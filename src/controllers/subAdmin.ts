@@ -73,6 +73,7 @@ export default class subAdmin {
                 mem,
                 battery,
             });
+            console.log(device);
             res.status(200).json({
                 status: 'success',
                 device,
@@ -84,21 +85,88 @@ export default class subAdmin {
     };
 
     getAllDevices: Base = async (req, res, next) => {
-        const devices = await Device.countDocuments();
-        res.status(200).json({
-            status: 'success',
-            devices,
-        });
+        try {
+            const devices = await Device.countDocuments();
+            res.status(200).json({
+                status: 'success',
+                devices,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
     };
 
     setupStatus: Base = async (req, res, next) => {
-        const { setupId } = req.body;
-        const { _id } = req.user;
-        const device = await Device.findOne({ setupId });
-        if (!device) return res.status(404).json('Not found');
-        res.status(200).json({
-            status: 'success',
-            device,
-        });
+        try {
+            const { setupId } = req.params;
+            const { _id } = req.user;
+            const device = await Device.findOne({ setupId });
+            if (!device) return res.status(404).json('Not found');
+            res.status(200).json({
+                status: 'success',
+                device,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
+    getAllStaffs: Base = async (req, res) => {
+        try {
+            const staffs = await Staff.find({ organization: req.user._id });
+            if (!staffs) return res.status(404).json('No staffs recorded');
+            res.status(200).json({
+                status: 'success',
+                staffs,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
+    deleteStaff: Base = async (req, res) => {
+        try {
+            const { id } = req.params;
+            await Staff.findByIdAndDelete(id);
+            res.status(204).send;
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+    getProfile: Base = async (req, res) => {
+        try {
+            const profile = req.user;
+            res.status(200).json({
+                status: 'success',
+                profile,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
+    updateProfile: Base = async (req, res) => {
+        try {
+            const { _id } = req.user;
+            const { name, phone } = req.body;
+
+            const profile = await Organization.findByIdAndUpdate(
+                _id,
+                { name, phone },
+                { new: true }
+            );
+            res.status(200).json({
+                status: 'success',
+                profile,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
     };
 }

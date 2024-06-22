@@ -1,5 +1,6 @@
 //get long. and lat. for a technician
-const axios = require('axios');
+import axios from 'axios';
+import Config from '../config';
 
 const technician = {
     state: 'Akwa Ibom',
@@ -23,9 +24,8 @@ export default class Geo {
 
         text = text + 'nigeria';
 
-        const apiKey = '7cc37674afab4d20b1080461e5f050fc';
         const response = await axios.get(
-            `https://api.geoapify.com/v1/geocode/search?text=${text}&format=json&apiKey=${apiKey}`
+            `https://api.geoapify.com/v1/geocode/search?text=${text}&format=json&apiKey=${Config.GEO_API_KEY}`
         );
 
         const result = response.data.results[0];
@@ -33,5 +33,3 @@ export default class Geo {
         return [lon, lat];
     }
 }
-
-// Geo();

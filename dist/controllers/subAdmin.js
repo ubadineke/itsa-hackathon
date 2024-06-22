@@ -79,6 +79,7 @@ class subAdmin {
                     mem,
                     battery,
                 });
+                console.log(device);
                 res.status(200).json({
                     status: 'success',
                     device,

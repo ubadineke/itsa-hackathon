@@ -8,9 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 //get long. and lat. for a technician
-const axios = require('axios');
+const axios_1 = __importDefault(require("axios"));
 const technician = {
     state: 'Akwa Ibom',
     lga: 'Etinan',
@@ -29,7 +32,7 @@ class Geo {
             }
             text = text + 'nigeria';
             const apiKey = '7cc37674afab4d20b1080461e5f050fc';
-            const response = yield axios.get(`https://api.geoapify.com/v1/geocode/search?text=${text}&format=json&apiKey=${apiKey}`);
+            const response = yield axios_1.default.get(`https://api.geoapify.com/v1/geocode/search?text=${text}&format=json&apiKey=${apiKey}`);
             const result = response.data.results[0];
             const { lon, lat } = result;
             return [lon, lat];
@@ -37,4 +40,3 @@ class Geo {
     }
 }
 exports.default = Geo;
-// Geo();

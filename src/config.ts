@@ -11,6 +11,7 @@ interface EnvConfig {
     JWT_EXPIRES_IN: string;
     GMAIL_NAME: string;
     GMAIL_PASSWORD: string;
+    GEO_API_KEY: string;
 }
 
 const envSchema = Joi.object({
@@ -21,6 +22,7 @@ const envSchema = Joi.object({
     JWT_EXPIRES_IN: Joi.string().required(),
     GMAIL_NAME: Joi.string().required(),
     GMAIL_PASSWORD: Joi.string().required(),
+    GEO_API_KEY: Joi.string().required(),
 }).unknown();
 
 const { error, value: envVars } = envSchema.validate(process.env, { allowUnknown: true });
@@ -37,6 +39,7 @@ class Config implements EnvConfig {
     JWT_EXPIRES_IN: string;
     GMAIL_NAME: string;
     GMAIL_PASSWORD: string;
+    GEO_API_KEY: string;
 
     private dbConnection: Connection | null = null;
 
@@ -48,6 +51,7 @@ class Config implements EnvConfig {
         this.JWT_EXPIRES_IN = config.JWT_EXPIRES_IN;
         this.GMAIL_NAME = config.GMAIL_NAME;
         this.GMAIL_PASSWORD = config.GMAIL_PASSWORD;
+        this.GEO_API_KEY = config.GEO_API_KEY;
     }
 
     public async connectToDatabase() {
