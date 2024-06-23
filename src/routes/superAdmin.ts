@@ -9,5 +9,7 @@ const SuperAdmin = new SuperAdminController();
 
 router.use(Auth.protect('super-admin'));
 router.post('/technician', SuperAdmin.createTechnician);
+router.get('/organizations', SuperAdmin.organizations);
+router.get('/staffs', SuperAdmin.staffs);
 
 export default router;
