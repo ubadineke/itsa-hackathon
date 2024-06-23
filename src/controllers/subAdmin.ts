@@ -63,16 +63,23 @@ export default class subAdmin {
         try {
             const { city, lon, lat, email, setupId, name, system, osInfo, mem, cpu, battery } =
                 req.body;
-            console.log(email, setupId);
 
             const staff = await Staff.findOne({ email: email });
             if (!staff) return res.status(400).json('Staff Record not found');
+            const count = await Device.countDocuments({ staff: staff._id });
+            let randomString = crypto.randomBytes(5).toString('hex').slice(0, 5);
+            randomString = randomString.toUpperCase();
+
+            const deviceName = `${count + 1}D${randomString}`;
+            // return console.log(deviceName);
             if (staff.requestToken !== setupId)
                 return res.status(400).json('Setup id not correct or not recorded');
-            console.log(req.body);
+
             const location = { type: 'Point', coordinates: [lon, lat] };
+
             const device = await Device.create({
                 staff,
+                deviceName,
                 setupId,
                 name,
                 system,

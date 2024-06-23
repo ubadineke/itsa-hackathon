@@ -9,6 +9,7 @@ const deviceSchema = new Schema<IDevice>(
             ref: Staff,
             requred: [true, 'staff info must be provided'],
         },
+        deviceName: { type: String, required: [true, 'provide device name'] },
         setupId: { type: String, required: [true, 'provide setup id'] },
         name: { type: String },
         system: { type: Object },

@@ -54,6 +54,7 @@ export interface ITechnician extends Document {
 
 export interface IDevice extends Document {
     staff: ObjectId;
+    deviceName: string;
     setupId: string;
     name: string;
     system: {};
