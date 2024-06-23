@@ -43,12 +43,12 @@ export default class subAdmin {
 
     newDeviceRequest: Base = async (req, res, next) => {
         try {
+            const { email } = req.body;
             const randomString = crypto.randomBytes(10).toString('hex').slice(0, 10);
-            await Staff.findOneAndUpdate(
-                { email: req.body.email },
-                { requestToken: randomString },
-                { new: true }
-            );
+            const staff = await Staff.findOne({ email });
+            if (!staff) return res.status(400).json('No staff with that email found');
+            staff.requestToken = randomString;
+            await staff.save();
             res.status(200).json({
                 status: 'success',
                 setupId: randomString,
@@ -61,14 +61,16 @@ export default class subAdmin {
 
     collectInfo: Base = async (req, res, next) => {
         try {
-            const { email, setupId, name, system, osInfo, mem, cpu, battery } = req.body;
+            const { city, lon, lat, email, setupId, name, system, osInfo, mem, cpu, battery } =
+                req.body;
             console.log(email, setupId);
 
             const staff = await Staff.findOne({ email: email });
             if (!staff) return res.status(400).json('Staff Record not found');
             if (staff.requestToken !== setupId)
                 return res.status(400).json('Setup id not correct or not recorded');
-
+            console.log(req.body);
+            const location = { type: 'Point', coordinates: [lon, lat] };
             const device = await Device.create({
                 staff,
                 setupId,
@@ -78,6 +80,8 @@ export default class subAdmin {
                 cpu,
                 mem,
                 battery,
+                city,
+                location,
             });
             console.log(device);
             res.status(200).json({

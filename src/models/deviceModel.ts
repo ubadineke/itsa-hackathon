@@ -16,6 +16,18 @@ const deviceSchema = new Schema<IDevice>(
         cpu: { type: Object },
         mem: { type: Object },
         battery: { type: Object },
+        city: { type: String },
+        location: {
+            type: {
+                type: String,
+                enum: ['Point'],
+                required: true,
+            },
+            coordinates: {
+                type: [Number],
+                required: true,
+            },
+        },
     },
     { timestamps: true }
 );

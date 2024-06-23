@@ -61,6 +61,11 @@ export interface IDevice extends Document {
     cpu: {};
     mem: {};
     battery: {};
+    city: string;
+    location: {
+        type: string;
+        coordinates: [];
+    };
 }
 
 export interface IRequest extends Document {
