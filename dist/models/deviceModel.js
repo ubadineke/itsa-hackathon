@@ -34,6 +34,7 @@ const deviceSchema = new mongoose_1.Schema({
         ref: staffModel_1.default,
         requred: [true, 'staff info must be provided'],
     },
+    deviceName: { type: String, required: [true, 'provide device name'] },
     setupId: { type: String, required: [true, 'provide setup id'] },
     name: { type: String },
     system: { type: Object },
@@ -41,6 +42,18 @@ const deviceSchema = new mongoose_1.Schema({
     cpu: { type: Object },
     mem: { type: Object },
     battery: { type: Object },
+    city: { type: String },
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true,
+        },
+        coordinates: {
+            type: [Number],
+            required: true,
+        },
+    },
 }, { timestamps: true });
 const Device = (0, mongoose_1.model)('Device', deviceSchema);
 exports.default = Device;

@@ -55,8 +55,13 @@ class subAdmin {
         });
         this.newDeviceRequest = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
+                const { email } = req.body;
                 const randomString = crypto_1.default.randomBytes(10).toString('hex').slice(0, 10);
-                yield staffModel_1.default.findOneAndUpdate({ email: req.body.email }, { requestToken: randomString }, { new: true });
+                const staff = yield staffModel_1.default.findOne({ email });
+                if (!staff)
+                    return res.status(400).json('No staff with that email found');
+                staff.requestToken = randomString;
+                yield staff.save();
                 res.status(200).json({
                     status: 'success',
                     setupId: randomString,
@@ -69,15 +74,21 @@ class subAdmin {
         });
         this.collectInfo = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { email, setupId, name, system, osInfo, mem, cpu, battery } = req.body;
-                console.log(email, setupId);
+                const { city, lon, lat, email, setupId, name, system, osInfo, mem, cpu, battery } = req.body;
                 const staff = yield staffModel_1.default.findOne({ email: email });
                 if (!staff)
                     return res.status(400).json('Staff Record not found');
+                const count = yield deviceModel_1.default.countDocuments({ staff: staff._id });
+                let randomString = crypto_1.default.randomBytes(5).toString('hex').slice(0, 5);
+                randomString = randomString.toUpperCase();
+                const deviceName = `${count + 1}D${randomString}`;
+                // return console.log(deviceName);
                 if (staff.requestToken !== setupId)
                     return res.status(400).json('Setup id not correct or not recorded');
+                const location = { type: 'Point', coordinates: [lon, lat] };
                 const device = yield deviceModel_1.default.create({
                     staff,
+                    deviceName,
                     setupId,
                     name,
                     system,
@@ -85,6 +96,8 @@ class subAdmin {
                     cpu,
                     mem,
                     battery,
+                    city,
+                    location,
                 });
                 console.log(device);
                 res.status(200).json({

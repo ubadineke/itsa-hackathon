@@ -11,4 +11,6 @@ const router = (0, express_1.Router)();
 const SuperAdmin = new superAdmin_1.default();
 router.use(Auth.protect('super-admin'));
 router.post('/technician', SuperAdmin.createTechnician);
+router.get('/organizations', SuperAdmin.organizations);
+router.get('/staffs', SuperAdmin.staffs);
 exports.default = router;
