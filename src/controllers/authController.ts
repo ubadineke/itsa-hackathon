@@ -6,8 +6,8 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import JwtFunction from '../utils/jwtToken';
 import { promisify } from 'util';
 import Config from '../config';
-import { verify } from 'crypto';
 import Admin from '../models/superAdmin';
+import Technician from '../models/technicianModel';
 
 const Jwt = new JwtFunction();
 
@@ -55,6 +55,8 @@ export default class AuthController {
                 user = await Staff.findOne({ email }).select('+password');
             } else if (role === 'super-admin') {
                 user = await Admin.findOne({ email }).select('+password');
+            } else if (role === 'technician') {
+                user = await Technician.findOne({ email }).select('+password');
             } else {
                 return res.status(404).json('Specify correct role');
             }
@@ -118,8 +120,10 @@ export default class AuthController {
                     currentUser = await Staff.findById(decoded.id);
                 } else if (this.role === 'super-admin') {
                     currentUser = await Admin.findById(decoded.id);
+                } else if (this.role === 'technician') {
+                    currentUser = await Technician.findById(decoded.id);
                 } else {
-                    return res.status(400).json('Provide the accepted user types');
+                    return res.status(400).json('Provide the accepted user roles');
                 }
                 if (!currentUser) {
                     return res

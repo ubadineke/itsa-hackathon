@@ -23,6 +23,11 @@ const requestSchema = new Schema<IRequest>(
             ref: Technician,
             required: [true, 'Please provide technician on the job'],
         },
+        status: {
+            type: String,
+            enum: ['pending', 'ongoing', 'done'],
+            default: 'pending',
+        },
     },
     { timestamps: true }
 );

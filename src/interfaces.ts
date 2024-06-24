@@ -42,6 +42,7 @@ export interface ITechnician extends Document {
     _id: ObjectId;
     name: string;
     email: string;
+    role: string;
     phone: string;
     password: string;
     state: string;
@@ -73,4 +74,5 @@ export interface IRequest extends Document {
     device: ObjectId;
     description: string;
     technician: ObjectId;
+    status: string;
 }

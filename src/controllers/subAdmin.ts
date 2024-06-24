@@ -15,6 +15,7 @@ export default class subAdmin {
 
             //Random password
             const password = crypto.randomBytes(10).toString('hex').slice(0, 10);
+            // const password = '123456789';
             const staff = await Staff.create({
                 organization: req.user._id,
                 name,
@@ -186,4 +187,19 @@ export default class subAdmin {
             res.status(500).json(err);
         }
     };
+
+    // getSingleDevice: Base = async (req, res, next) => {
+    //     try {
+    //         const { id } = req.params;
+    //         const device = await Device.findById(id);
+    //         if (!device) return res.status(404).json('No devices found');
+    //         res.status(200).json({
+    //             status: 'success',
+    //             device,
+    //         });
+    //     } catch (err) {
+    //         console.log(err);
+    //         res.status(500).json(err);
+    //     }
+    // };
 }

@@ -17,6 +17,17 @@ const technicianSchema = new Schema<ITechnician>(
             lowercase: true,
             validate: [validator.isEmail, 'Please provide a valid email'],
         },
+        password: {
+            type: String,
+            required: [true, 'Please provide a password'],
+            minlength: 8,
+            select: false,
+        },
+        role: {
+            type: String,
+            enum: ['technician'],
+            default: 'technician',
+        },
         phone: {
             type: String,
         },
@@ -42,6 +53,23 @@ const technicianSchema = new Schema<ITechnician>(
     },
     { timestamps: true }
 );
+
+technicianSchema.pre<ITechnician>('save', async function (next) {
+    //ONly run this function if password was actually modified
+    if (!this.isModified('password')) return next();
+
+    //Hash the password with cost of 12
+    this.password = await bcrypt.hash(this.password, 8);
+
+    next();
+});
+
+technicianSchema.methods.correctPassword = async function (
+    incomingPassword: string,
+    storedPassword: string
+) {
+    return await bcrypt.compare(incomingPassword, storedPassword);
+};
 
 technicianSchema.index({ location: '2dsphere' });
 
