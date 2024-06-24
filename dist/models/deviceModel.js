@@ -34,9 +34,8 @@ const deviceSchema = new mongoose_1.Schema({
         ref: staffModel_1.default,
         requred: [true, 'staff info must be provided'],
     },
-    deviceName: { type: String, required: [true, 'provide device name'] },
-    setupId: { type: String, required: [true, 'provide setup id'] },
     name: { type: String },
+    setupId: { type: String, required: [true, 'provide setup id'] },
     system: { type: Object },
     osInfo: { type: Object },
     cpu: { type: Object },
@@ -55,5 +54,6 @@ const deviceSchema = new mongoose_1.Schema({
         },
     },
 }, { timestamps: true });
+deviceSchema.index({ location: '2dsphere' });
 const Device = (0, mongoose_1.model)('Device', deviceSchema);
 exports.default = Device;

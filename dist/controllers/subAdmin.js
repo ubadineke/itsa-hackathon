@@ -81,16 +81,15 @@ class subAdmin {
                 const count = yield deviceModel_1.default.countDocuments({ staff: staff._id });
                 let randomString = crypto_1.default.randomBytes(5).toString('hex').slice(0, 5);
                 randomString = randomString.toUpperCase();
-                const deviceName = `${count + 1}D${randomString}`;
+                const deviceName = `Device ${count + 1}${randomString}`;
                 // return console.log(deviceName);
                 if (staff.requestToken !== setupId)
                     return res.status(400).json('Setup id not correct or not recorded');
                 const location = { type: 'Point', coordinates: [lon, lat] };
                 const device = yield deviceModel_1.default.create({
                     staff,
-                    deviceName,
                     setupId,
-                    name,
+                    name: deviceName,
                     system,
                     osInfo,
                     cpu,

@@ -14,6 +14,7 @@ console.log(process.env.DB);
 Config.connectToDatabase();
 // connectDB;
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use('/api', authRouter);

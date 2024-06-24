@@ -1,6 +1,6 @@
 import Staff from '../models/staffModel';
 import Device from '../models/deviceModel';
-import { Base, ITechnician } from '../interfaces';
+import { Base, IDevice, ITechnician } from '../interfaces';
 import Request from '../models/requestModel';
 import Technician from '../models/technicianModel';
 import EmailSender from '../utils/email';
@@ -43,28 +43,34 @@ export default class StaffController {
         });
     };
     makeMaintenanceRequest: Base = async (req, res) => {
-        const { id } = req.params;
+        const { id, description } = req.body;
         const device = await Device.findById(id);
         if (!device) return res.status(400).json('Device not found');
-        // return console.log(device);
-        const coordinates = device.location.coordinates;
-        const location = await getNearest(coordinates);
-        return console.log(location);
+
+        const coordinates = device?.location.coordinates;
+        const technician = await getNearest(coordinates);
+
+        if (!technician[0]) return res.status(400).json('No technicians found');
 
         const sendEmail = new EmailSender();
-        //     const {id, description} = req.body
-        //     //staff wey get am
-        //     const technician = await Technician.findById(id);
-        //     const request = await Request.create({staff: req.user._id, device: id, description, technician })
-        // await sendEmail.sendEmail({
-        //     email: technician.email,
-        //     subject: 'Maintenance Request',
-        //     message,
-        // }).catch(async (err) => {
-        // });
-        // staff, device, description, technician
-        //device id
-        //note
-        //store and send to the closest techincian email
+
+        const request = await Request.create({
+            staff: req.user,
+            device,
+            description,
+            technician: technician[0]._id,
+        });
+        await sendEmail
+            .send({
+                email: technician[0]?.email,
+                subject: 'Maintenance Request',
+                message: description,
+            })
+            .catch((err) => console.log(err));
+
+        res.status(200).json({
+            status: 'success',
+            request,
+        });
     };
 }

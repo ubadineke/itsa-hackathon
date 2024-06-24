@@ -13,6 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const deviceModel_1 = __importDefault(require("../models/deviceModel"));
+const requestModel_1 = __importDefault(require("../models/requestModel"));
+const email_1 = __importDefault(require("../utils/email"));
+const getNearest_1 = __importDefault(require("../utils/getNearest"));
 class StaffController {
     constructor() {
         this.deviceCount = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
@@ -51,21 +54,33 @@ class StaffController {
             });
         });
         this.makeMaintenanceRequest = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            // const sendEmail = new EmailSender()
-            //         const {id, description} = req.body
-            //         //staff wey get am
-            //         const technician = await Technician.findById(id);
-            //         const request = await Request.create({staff: req.user._id, device: id, description, technician })
-            //     await sendEmail.sendEmail({
-            //         email: technician.email,
-            //         subject: 'Maintenance Request',
-            //         message,
-            //     }).catch(async (err) => {
-            //     });
-            //         // staff, device, description, technician
-            //         //device id
-            //         //note
-            //         //store and send to the closest techincian email
+            var _a;
+            const { id, description } = req.body;
+            const device = yield deviceModel_1.default.findById(id);
+            if (!device)
+                return res.status(400).json('Device not found');
+            const coordinates = device === null || device === void 0 ? void 0 : device.location.coordinates;
+            const technician = yield (0, getNearest_1.default)(coordinates);
+            if (!technician[0])
+                return res.status(400).json('No technicians found');
+            const sendEmail = new email_1.default();
+            const request = yield requestModel_1.default.create({
+                staff: req.user,
+                device,
+                description,
+                technician: technician[0]._id,
+            });
+            yield sendEmail
+                .send({
+                email: (_a = technician[0]) === null || _a === void 0 ? void 0 : _a.email,
+                subject: 'Maintenance Request',
+                message: description,
+            })
+                .catch((err) => console.log(err));
+            res.status(200).json({
+                status: 'success',
+                request,
+            });
         });
     }
 }

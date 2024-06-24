@@ -36,7 +36,7 @@ const requestSchema = new mongoose_1.Schema({
         required: [true, 'Please provide staff'],
     },
     device: {
-        type: String,
+        type: mongoose_1.default.Schema.Types.ObjectId,
         required: [true, 'Please provide device'],
     },
     description: {
