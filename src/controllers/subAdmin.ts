@@ -70,7 +70,7 @@ export default class subAdmin {
             let randomString = crypto.randomBytes(5).toString('hex').slice(0, 5);
             randomString = randomString.toUpperCase();
 
-            const deviceName = `${count + 1}D${randomString}`;
+            const deviceName = `Device ${count + 1}${randomString}`;
             // return console.log(deviceName);
             if (staff.requestToken !== setupId)
                 return res.status(400).json('Setup id not correct or not recorded');
@@ -79,9 +79,8 @@ export default class subAdmin {
 
             const device = await Device.create({
                 staff,
-                deviceName,
                 setupId,
-                name,
+                name: deviceName,
                 system,
                 osInfo,
                 cpu,

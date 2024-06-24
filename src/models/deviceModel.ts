@@ -9,9 +9,8 @@ const deviceSchema = new Schema<IDevice>(
             ref: Staff,
             requred: [true, 'staff info must be provided'],
         },
-        deviceName: { type: String, required: [true, 'provide device name'] },
-        setupId: { type: String, required: [true, 'provide setup id'] },
         name: { type: String },
+        setupId: { type: String, required: [true, 'provide setup id'] },
         system: { type: Object },
         osInfo: { type: Object },
         cpu: { type: Object },
@@ -32,6 +31,8 @@ const deviceSchema = new Schema<IDevice>(
     },
     { timestamps: true }
 );
+
+deviceSchema.index({ location: '2dsphere' });
 
 const Device = model<IDevice>('Device', deviceSchema);
 export default Device;
