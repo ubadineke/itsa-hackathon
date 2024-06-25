@@ -16,12 +16,14 @@ const orgModel_1 = __importDefault(require("../models/orgModel"));
 const staffModel_1 = __importDefault(require("../models/staffModel"));
 const technicianModel_1 = __importDefault(require("../models/technicianModel"));
 const geo_1 = __importDefault(require("../utils/geo"));
+const randomString_1 = __importDefault(require("../utils/randomString"));
 class SuperAdminController {
     constructor() {
         //create technician
         this.createTechnician = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { name, email, phone, state, lga } = req.body;
+                const password = (0, randomString_1.default)(10);
                 const coordinates = yield geo_1.default.getCoordinates(state, lga);
                 const location = {
                     type: 'Point',
@@ -30,15 +32,16 @@ class SuperAdminController {
                 const technician = yield technicianModel_1.default.create({
                     name,
                     email,
+                    password,
                     phone,
                     state,
                     lga,
                     location,
                 });
-                console.log(technician);
                 res.status(200).json({
                     status: 'success',
-                    technician,
+                    email,
+                    password,
                 });
             }
             catch (err) {
@@ -70,6 +73,21 @@ class SuperAdminController {
                 res.status(200).json({
                     status: 'success',
                     staffs,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.technicians = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const technicians = yield technicianModel_1.default.find().select('-location');
+                if (!technicians)
+                    return res.status(404).json('Technicians not found');
+                res.status(200).json({
+                    status: 'success',
+                    technicians,
                 });
             }
             catch (err) {

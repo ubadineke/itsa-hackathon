@@ -19,6 +19,7 @@ const jwtToken_1 = __importDefault(require("../utils/jwtToken"));
 const util_1 = require("util");
 const config_1 = __importDefault(require("../config"));
 const superAdmin_1 = __importDefault(require("../models/superAdmin"));
+const technicianModel_1 = __importDefault(require("../models/technicianModel"));
 const Jwt = new jwtToken_1.default();
 class AuthController {
     constructor() {
@@ -61,6 +62,9 @@ class AuthController {
                 }
                 else if (role === 'super-admin') {
                     user = yield superAdmin_1.default.findOne({ email }).select('+password');
+                }
+                else if (role === 'technician') {
+                    user = yield technicianModel_1.default.findOne({ email }).select('+password');
                 }
                 else {
                     return res.status(404).json('Specify correct role');
@@ -116,8 +120,11 @@ class AuthController {
                     else if (this.role === 'super-admin') {
                         currentUser = yield superAdmin_1.default.findById(decoded.id);
                     }
+                    else if (this.role === 'technician') {
+                        currentUser = yield technicianModel_1.default.findById(decoded.id);
+                    }
                     else {
-                        return res.status(400).json('Provide the accepted user types');
+                        return res.status(400).json('Provide the accepted user roles');
                     }
                     if (!currentUser) {
                         return res

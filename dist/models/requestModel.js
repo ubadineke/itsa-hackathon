@@ -43,10 +43,20 @@ const requestSchema = new mongoose_1.Schema({
         type: String,
         required: [true, 'Please provide description'],
     },
+    priority: {
+        type: String,
+        enum: ['low', 'medium', 'high'],
+        required: [true, 'Please state priority'],
+    },
     technician: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: technicianModel_1.default,
         required: [true, 'Please provide technician on the job'],
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'ongoing', 'done'],
+        default: 'pending',
     },
 }, { timestamps: true });
 const Request = (0, mongoose_1.model)('Request', requestSchema);

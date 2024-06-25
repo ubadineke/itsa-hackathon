@@ -27,6 +27,7 @@ class subAdmin {
                     return res.status(400).json('Provide staff email');
                 //Random password
                 const password = crypto_1.default.randomBytes(10).toString('hex').slice(0, 10);
+                // const password = '123456789';
                 const staff = yield staffModel_1.default.create({
                     organization: req.user._id,
                     name,
@@ -109,12 +110,16 @@ class subAdmin {
                 res.status(500).json(err);
             }
         });
-        this.getAllDevices = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+        this.getDeviceCount = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const devices = yield deviceModel_1.default.countDocuments();
+                // const devices = await Device.countDocuments();
+                const staffs = yield staffModel_1.default.find({ organization: req.user._id }).select('_id');
+                const staffIds = staffs.map((staff) => staff._id);
+                const devices = yield deviceModel_1.default.find({ staff: { $in: staffIds } });
+                const count = devices.length;
                 res.status(200).json({
                     status: 'success',
-                    devices,
+                    devices: count,
                 });
             }
             catch (err) {
@@ -187,6 +192,39 @@ class subAdmin {
                 res.status(200).json({
                     status: 'success',
                     profile,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        // getAllDevices:Base = async(req, res)=> {
+        // }
+        this.getSingleDevice = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const device = yield deviceModel_1.default.findById(id);
+                if (!device)
+                    return res.status(404).json('No devices found');
+                res.status(200).json({
+                    status: 'success',
+                    device,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.getDevices = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const staffs = yield staffModel_1.default.find({ organization: req.user._id }).select('_id');
+                const staffIds = staffs.map((staff) => staff._id);
+                const devices = yield deviceModel_1.default.find({ staff: { $in: staffIds } });
+                res.status(200).json({
+                    status: 'success',
+                    devices,
                 });
             }
             catch (err) {

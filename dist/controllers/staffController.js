@@ -35,52 +35,65 @@ class StaffController {
             }
         });
         this.listDevices = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            const devices = yield deviceModel_1.default.find({ staff: req.user._id });
-            if (!devices)
-                return res.status(404).json('No devices attached to this user yet');
-            res.status(200).json({
-                status: 'success',
-                devices,
-            });
+            try {
+                const devices = yield deviceModel_1.default.find({ staff: req.user._id });
+                if (!devices)
+                    return res.status(404).json('No devices attached to this user yet');
+                res.status(200).json({
+                    status: 'success',
+                    devices,
+                });
+            }
+            catch (err) { }
         });
         this.getSingleDevice = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { id } = req.params;
-            const device = yield deviceModel_1.default.findById({ _id: id });
-            if (!device)
-                return res.status(404).json('No device recorded');
-            res.status(200).json({
-                status: 'success',
-                device,
-            });
+            try {
+                const { id } = req.params;
+                const device = yield deviceModel_1.default.findById({ _id: id });
+                if (!device)
+                    return res.status(404).json('No device recorded');
+                res.status(200).json({
+                    status: 'success',
+                    device,
+                });
+            }
+            catch (err) { }
         });
         this.makeMaintenanceRequest = (req, res) => __awaiter(this, void 0, void 0, function* () {
             var _a;
-            const { id, description } = req.body;
-            const device = yield deviceModel_1.default.findById(id);
-            if (!device)
-                return res.status(400).json('Device not found');
-            const coordinates = device === null || device === void 0 ? void 0 : device.location.coordinates;
-            const technician = yield (0, getNearest_1.default)(coordinates);
-            if (!technician[0])
-                return res.status(400).json('No technicians found');
-            const sendEmail = new email_1.default();
-            const request = yield requestModel_1.default.create({
-                staff: req.user,
-                device,
-                description,
-                technician: technician[0]._id,
-            });
-            yield sendEmail
-                .send({
-                email: (_a = technician[0]) === null || _a === void 0 ? void 0 : _a.email,
-                subject: 'Maintenance Request',
-                message: description,
-            })
-                .catch((err) => console.log(err));
-            res.status(200).json({
-                status: 'success',
-                request,
-            });
+            try {
+                const { id, priority, description } = req.body;
+                const device = yield deviceModel_1.default.findById(id);
+                if (!device)
+                    return res.status(400).json('Device not found');
+                const coordinates = device === null || device === void 0 ? void 0 : device.location.coordinates;
+                const technician = yield (0, getNearest_1.default)(coordinates);
+                if (!technician[0])
+                    return res.status(400).json('No technicians found');
+                const sendEmail = new email_1.default();
+                const request = yield requestModel_1.default.create({
+                    staff: req.user,
+                    device,
+                    description,
+                    priority,
+                    technician: technician[0]._id,
+                });
+                yield sendEmail
+                    .send({
+                    email: (_a = technician[0]) === null || _a === void 0 ? void 0 : _a.email,
+                    subject: 'Maintenance Request',
+                    message: description,
+                })
+                    .catch((err) => console.log(err));
+                res.status(200).json({
+                    status: 'success',
+                    request,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
         });
     }
 }
