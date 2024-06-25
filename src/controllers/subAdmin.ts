@@ -4,7 +4,7 @@ import { Base } from '../interfaces';
 import crypto from 'crypto';
 import Device from '../models/deviceModel';
 import EmailSender from '../utils/email';
-
+import mongoose from 'mongoose';
 const Email = new EmailSender();
 
 export default class subAdmin {
@@ -103,10 +103,15 @@ export default class subAdmin {
 
     getDeviceCount: Base = async (req, res, next) => {
         try {
-            const devices = await Device.countDocuments();
+            // const devices = await Device.countDocuments();
+            const staffs = await Staff.find({ organization: req.user._id }).select('_id');
+            const staffIds = staffs.map((staff) => staff._id);
+
+            const devices = await Device.find({ staff: { $in: staffIds } });
+            const count = devices.length;
             res.status(200).json({
                 status: 'success',
-                devices,
+                devices: count,
             });
         } catch (err) {
             console.log(err);
@@ -198,6 +203,22 @@ export default class subAdmin {
             res.status(200).json({
                 status: 'success',
                 device,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
+    getDevices: Base = async (req, res) => {
+        try {
+            const staffs = await Staff.find({ organization: req.user._id }).select('_id');
+            const staffIds = staffs.map((staff) => staff._id);
+
+            const devices = await Device.find({ staff: { $in: staffIds } });
+            res.status(200).json({
+                status: 'success',
+                devices,
             });
         } catch (err) {
             console.log(err);
