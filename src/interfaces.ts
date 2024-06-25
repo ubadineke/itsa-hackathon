@@ -73,6 +73,7 @@ export interface IRequest extends Document {
     staff: ObjectId;
     device: ObjectId;
     description: string;
+    priority: string;
     technician: ObjectId;
     status: string;
 }

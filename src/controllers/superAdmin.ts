@@ -67,4 +67,18 @@ export default class SuperAdminController {
             res.status(500).json(err);
         }
     };
+
+    technicians: Base = async (req, res) => {
+        try {
+            const technicians = await Technician.find().select('-location');
+            if (!technicians) return res.status(404).json('Technicians not found');
+            res.status(200).json({
+                status: 'success',
+                technicians,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
 }

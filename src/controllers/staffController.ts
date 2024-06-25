@@ -25,52 +25,62 @@ export default class StaffController {
     };
 
     listDevices: Base = async (req, res, next) => {
-        const devices = await Device.find({ staff: req.user._id });
-        if (!devices) return res.status(404).json('No devices attached to this user yet');
-        res.status(200).json({
-            status: 'success',
-            devices,
-        });
+        try {
+            const devices = await Device.find({ staff: req.user._id });
+            if (!devices) return res.status(404).json('No devices attached to this user yet');
+            res.status(200).json({
+                status: 'success',
+                devices,
+            });
+        } catch (err) {}
     };
 
     getSingleDevice: Base = async (req, res) => {
-        const { id } = req.params;
-        const device = await Device.findById({ _id: id });
-        if (!device) return res.status(404).json('No device recorded');
-        res.status(200).json({
-            status: 'success',
-            device,
-        });
+        try {
+            const { id } = req.params;
+            const device = await Device.findById({ _id: id });
+            if (!device) return res.status(404).json('No device recorded');
+            res.status(200).json({
+                status: 'success',
+                device,
+            });
+        } catch (err) {}
     };
     makeMaintenanceRequest: Base = async (req, res) => {
-        const { id, description } = req.body;
-        const device = await Device.findById(id);
-        if (!device) return res.status(400).json('Device not found');
+        try {
+            const { id, priority, description } = req.body;
+            const device = await Device.findById(id);
+            if (!device) return res.status(400).json('Device not found');
 
-        const coordinates = device?.location.coordinates;
-        const technician = await getNearest(coordinates);
+            const coordinates = device?.location.coordinates;
+            const technician = await getNearest(coordinates);
 
-        if (!technician[0]) return res.status(400).json('No technicians found');
+            if (!technician[0]) return res.status(400).json('No technicians found');
 
-        const sendEmail = new EmailSender();
+            const sendEmail = new EmailSender();
 
-        const request = await Request.create({
-            staff: req.user,
-            device,
-            description,
-            technician: technician[0]._id,
-        });
-        await sendEmail
-            .send({
-                email: technician[0]?.email,
-                subject: 'Maintenance Request',
-                message: description,
-            })
-            .catch((err) => console.log(err));
+            const request = await Request.create({
+                staff: req.user,
+                device,
+                description,
+                priority,
+                technician: technician[0]._id,
+            });
+            await sendEmail
+                .send({
+                    email: technician[0]?.email,
+                    subject: 'Maintenance Request',
+                    message: description,
+                })
+                .catch((err) => console.log(err));
 
-        res.status(200).json({
-            status: 'success',
-            request,
-        });
+            res.status(200).json({
+                status: 'success',
+                request,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
     };
 }

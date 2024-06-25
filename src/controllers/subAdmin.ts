@@ -101,7 +101,7 @@ export default class subAdmin {
         }
     };
 
-    getAllDevices: Base = async (req, res, next) => {
+    getDeviceCount: Base = async (req, res, next) => {
         try {
             const devices = await Device.countDocuments();
             res.status(200).json({
@@ -187,19 +187,21 @@ export default class subAdmin {
             res.status(500).json(err);
         }
     };
+    // getAllDevices:Base = async(req, res)=> {
 
-    // getSingleDevice: Base = async (req, res, next) => {
-    //     try {
-    //         const { id } = req.params;
-    //         const device = await Device.findById(id);
-    //         if (!device) return res.status(404).json('No devices found');
-    //         res.status(200).json({
-    //             status: 'success',
-    //             device,
-    //         });
-    //     } catch (err) {
-    //         console.log(err);
-    //         res.status(500).json(err);
-    //     }
-    // };
+    // }
+    getSingleDevice: Base = async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            const device = await Device.findById(id);
+            if (!device) return res.status(404).json('No devices found');
+            res.status(200).json({
+                status: 'success',
+                device,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
 }

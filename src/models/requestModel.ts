@@ -18,6 +18,11 @@ const requestSchema = new Schema<IRequest>(
             type: String,
             required: [true, 'Please provide description'],
         },
+        priority: {
+            type: String,
+            enum: ['low', 'medium', 'high'],
+            required: [true, 'Please state priority'],
+        },
         technician: {
             type: mongoose.Schema.Types.ObjectId,
             ref: Technician,

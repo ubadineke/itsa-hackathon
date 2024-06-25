@@ -12,10 +12,10 @@ router.use(Auth.protect('sub-admin'));
 router.post('/create-staff', subAdmin.createStaff);
 router.post('/new-request', subAdmin.newDeviceRequest);
 router.get('/setup-status/:setupId', subAdmin.setupStatus);
-router.get('/enrolled-devices', subAdmin.getAllDevices);
+router.get('/enrolled-devices', subAdmin.getDeviceCount);
 router.route('/staffs').get(subAdmin.getAllStaffs);
 router.route('/profile').get(subAdmin.getProfile).patch(subAdmin.updateProfile);
-// router.get('/device/:id').get(subAdmin.getSingleDevice);
+router.route('/device/:id').get(subAdmin.getSingleDevice);
 // router.get('/profile', subAdmin.getProfile);
 
 export default router;
