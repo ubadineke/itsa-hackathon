@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const requestModel_1 = __importDefault(require("../models/requestModel"));
+const technicianModel_1 = __importDefault(require("../models/technicianModel"));
 class TechnicianController {
     constructor() {
         this.getRequest = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -22,10 +23,14 @@ class TechnicianController {
                 console.log(status);
                 let requests;
                 if (!status) {
-                    requests = yield requestModel_1.default.find({ technician: _id });
+                    requests = yield requestModel_1.default.find({ technician: _id }).sort({
+                        createdAt: 1,
+                    });
                 }
                 if (status) {
-                    requests = yield requestModel_1.default.find({ technician: _id, status: status });
+                    requests = yield requestModel_1.default.find({ technician: _id, status: status }).sort({
+                        createdAt: 1,
+                    });
                 }
                 if (!requests)
                     return res.status(404).json('No requests found');
@@ -57,15 +62,27 @@ class TechnicianController {
                 res.status(500).json(err);
             }
         });
-        this.ongoingRequest = (req, res) => __awaiter(this, void 0, void 0, function* () {
+        this.getProfile = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { _id } = req.body;
-                const requests = yield requestModel_1.default.find({ technnician: _id, status: 'ongoing' });
-                if (!requests)
-                    return res.status(404).json('No requests found');
+                const profile = req.user;
                 res.status(200).json({
                     status: 'success',
-                    requests,
+                    profile,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.updateProfile = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { _id } = req.user;
+                const { name } = req.body;
+                const profile = yield technicianModel_1.default.findByIdAndUpdate(_id, { name }, { new: true });
+                res.status(200).json({
+                    status: 'success',
+                    profile,
                 });
             }
             catch (err) {

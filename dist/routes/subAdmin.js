@@ -11,13 +11,15 @@ const router = (0, express_1.Router)();
 const subAdmin = new subAdmin_1.default();
 router.post('/register-device', subAdmin.collectInfo);
 router.use(Auth.protect('sub-admin'));
-router.post('/create-staff', subAdmin.createStaff);
+router
+    .route('/staffs')
+    .post(subAdmin.createStaff)
+    .get(subAdmin.getAllStaffs)
+    .delete(subAdmin.deleteStaff);
 router.post('/new-request', subAdmin.newDeviceRequest);
 router.get('/setup-status/:setupId', subAdmin.setupStatus);
 router.get('/enrolled-devices', subAdmin.getDeviceCount);
-router.route('/staffs').get(subAdmin.getAllStaffs).delete(subAdmin.deleteStaff);
 router.route('/profile').get(subAdmin.getProfile).patch(subAdmin.updateProfile);
 router.route('/device/:id').get(subAdmin.getSingleDevice);
 router.get('/devices', subAdmin.getDevices);
-// router.get('/profile', subAdmin.getProfile);
 exports.default = router;

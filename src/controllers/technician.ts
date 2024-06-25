@@ -1,5 +1,6 @@
 import { Base } from '../interfaces';
 import Request from '../models/requestModel';
+import Technician from '../models/technicianModel';
 
 export default class TechnicianController {
     getRequest: Base = async (req, res) => {
@@ -10,11 +11,15 @@ export default class TechnicianController {
             let requests;
 
             if (!status) {
-                requests = await Request.find({ technician: _id });
+                requests = await Request.find({ technician: _id }).sort({
+                    createdAt: 1,
+                });
             }
 
             if (status) {
-                requests = await Request.find({ technician: _id, status: status });
+                requests = await Request.find({ technician: _id, status: status }).sort({
+                    createdAt: 1,
+                });
             }
 
             if (!requests) return res.status(404).json('No requests found');
@@ -44,14 +49,28 @@ export default class TechnicianController {
         }
     };
 
-    ongoingRequest: Base = async (req, res) => {
+    getProfile: Base = async (req, res) => {
         try {
-            const { _id } = req.body;
-            const requests = await Request.find({ technnician: _id, status: 'ongoing' });
-            if (!requests) return res.status(404).json('No requests found');
+            const profile = req.user;
             res.status(200).json({
                 status: 'success',
-                requests,
+                profile,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
+    updateProfile: Base = async (req, res) => {
+        try {
+            const { _id } = req.user;
+            const { name } = req.body;
+
+            const profile = await Technician.findByIdAndUpdate(_id, { name }, { new: true });
+            res.status(200).json({
+                status: 'success',
+                profile,
             });
         } catch (err) {
             console.log(err);

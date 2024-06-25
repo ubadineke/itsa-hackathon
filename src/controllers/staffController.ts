@@ -83,4 +83,40 @@ export default class StaffController {
             res.status(500).json(err);
         }
     };
+
+    getProfile: Base = async (req, res) => {
+        try {
+            const profile = req.user;
+            res.status(200).json({
+                status: 'success',
+                profile,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
+    updateProfile: Base = async (req, res) => {
+        try {
+            const { _id } = req.user;
+            const { name } = req.body;
+
+            const profile = await Staff.findByIdAndUpdate(_id, { name }, { new: true });
+            res.status(200).json({
+                status: 'success',
+                profile,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+    //get requests based on that staff
+    //get them by status of request
+    //count of the requests so far
+    //count of the outgoing maintenance
+    // Staff: Base = async(req, res)=> {
+
+    // }
 }

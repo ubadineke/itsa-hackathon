@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const staffModel_1 = __importDefault(require("../models/staffModel"));
 const deviceModel_1 = __importDefault(require("../models/deviceModel"));
 const requestModel_1 = __importDefault(require("../models/requestModel"));
 const email_1 = __importDefault(require("../utils/email"));
@@ -95,6 +96,40 @@ class StaffController {
                 res.status(500).json(err);
             }
         });
+        this.getProfile = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const profile = req.user;
+                res.status(200).json({
+                    status: 'success',
+                    profile,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.updateProfile = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { _id } = req.user;
+                const { name } = req.body;
+                const profile = yield staffModel_1.default.findByIdAndUpdate(_id, { name }, { new: true });
+                res.status(200).json({
+                    status: 'success',
+                    profile,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        //get requests based on that staff
+        //get them by status of request
+        //count of the requests so far
+        //count of the outgoing maintenance
+        // Staff: Base = async(req, res)=> {
+        // }
     }
 }
 exports.default = StaffController;
