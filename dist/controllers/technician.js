@@ -46,10 +46,19 @@ class TechnicianController {
         });
         this.updateRequest = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { id, status } = req.body;
-                if (!id || !status)
+                const { id, choice } = req.body;
+                if (!id || !choice)
                     return res.status(400).json('Provide id and/or status');
-                const request = yield requestModel_1.default.findByIdAndUpdate({ _id: id }, { status }, { new: true });
+                let request;
+                if (choice === 'accept') {
+                    request = yield requestModel_1.default.findByIdAndUpdate({ _id: id }, { status: 'ongoing' }, { new: true });
+                }
+                else if (choice === 'finish') {
+                    request = yield requestModel_1.default.findByIdAndUpdate({ _id: id }, { status: 'done' }, { new: true });
+                }
+                else {
+                    return res.status(400).json('Provide correct choice type');
+                }
                 if (!request)
                     return res.status(404).json('No request found');
                 res.status(200).json({

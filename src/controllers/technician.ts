@@ -35,9 +35,25 @@ export default class TechnicianController {
     };
     updateRequest: Base = async (req, res) => {
         try {
-            const { id, status } = req.body;
-            if (!id || !status) return res.status(400).json('Provide id and/or status');
-            const request = await Request.findByIdAndUpdate({ _id: id }, { status }, { new: true });
+            const { id, choice } = req.body;
+            if (!id || !choice) return res.status(400).json('Provide id and/or status');
+            let request;
+            if (choice === 'accept') {
+                request = await Request.findByIdAndUpdate(
+                    { _id: id },
+                    { status: 'ongoing' },
+                    { new: true }
+                );
+            } else if (choice === 'finish') {
+                request = await Request.findByIdAndUpdate(
+                    { _id: id },
+                    { status: 'done' },
+                    { new: true }
+                );
+            } else {
+                return res.status(400).json('Provide correct choice type');
+            }
+
             if (!request) return res.status(404).json('No request found');
             res.status(200).json({
                 status: 'success',

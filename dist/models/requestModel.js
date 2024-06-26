@@ -29,7 +29,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const staffModel_1 = __importDefault(require("./staffModel"));
 const technicianModel_1 = __importDefault(require("./technicianModel"));
+const orgModel_1 = __importDefault(require("./orgModel"));
 const requestSchema = new mongoose_1.Schema({
+    organization: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: orgModel_1.default,
+        required: [true, 'Please provide organization'],
+    },
     staff: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: staffModel_1.default,

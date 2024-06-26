@@ -63,6 +63,7 @@ export default class StaffController {
             const sendEmail = new EmailSender();
 
             const request = await Request.create({
+                organization: req.user.organization,
                 staff: req.user,
                 device,
                 description,

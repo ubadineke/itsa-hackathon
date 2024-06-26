@@ -2,9 +2,15 @@ import mongoose, { model, Document, Schema } from 'mongoose';
 import { IRequest } from '../interfaces';
 import Staff from './staffModel';
 import Technician from './technicianModel';
+import Organization from './orgModel';
 
 const requestSchema = new Schema<IRequest>(
     {
+        organization: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: Organization,
+            required: [true, 'Please provide organization'],
+        },
         staff: {
             type: mongoose.Schema.Types.ObjectId,
             ref: Staff,

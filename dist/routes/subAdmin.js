@@ -19,4 +19,7 @@ router.get('/enrolled-devices', subAdmin.getDeviceCount);
 router.route('/profile').get(subAdmin.getProfile).patch(subAdmin.updateProfile);
 router.route('/device/:id').get(subAdmin.getSingleDevice);
 router.get('/devices', subAdmin.getDevices);
+router.get('/staff-count', subAdmin.staffCount);
+router.get('/ongoing', subAdmin.ongoingMaintenance);
+router.get('/maintenance-request', subAdmin.getRequest);
 exports.default = router;

@@ -72,6 +72,7 @@ export interface IDevice extends Document {
 }
 
 export interface IRequest extends Document {
+    organization: ObjectId;
     staff: ObjectId;
     device: ObjectId;
     description: string;

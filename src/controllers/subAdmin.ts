@@ -1,5 +1,6 @@
 import Organization from '../models/orgModel';
 import Staff from '../models/staffModel';
+import Request from '../models/requestModel';
 import { Base } from '../interfaces';
 import crypto from 'crypto';
 import Device from '../models/deviceModel';
@@ -46,12 +47,12 @@ export default class subAdmin {
         try {
             const { user, email } = req.body;
             const randomString = crypto.randomBytes(10).toString('hex').slice(0, 10);
-            if (user === 'organization') {
+            if (user === 'staff') {
                 const staff = await Staff.findOne({ email });
                 if (!staff) return res.status(400).json('No staff with that email found');
                 staff.requestToken = randomString;
                 await staff.save();
-            } else if (user === 'staff') {
+            } else if (user === 'organization') {
                 const organization = await Organization.findOne({ email });
                 if (!organization)
                     return res.status(400).json('No organization with that email found');
@@ -77,7 +78,14 @@ export default class subAdmin {
                 req.body;
 
             const staff = await Staff.findOne({ email: email });
+            //if organization, send email and
             if (!staff) return res.status(400).json('Staff Record not found');
+            const organization = await Organization.findOne({ _id: staff.organization });
+            // if(){
+
+            // }else(){
+
+            // }
             const count = await Device.countDocuments({ staff: staff._id });
             let randomString = crypto.randomBytes(5).toString('hex').slice(0, 5);
             randomString = randomString.toUpperCase();
@@ -88,7 +96,7 @@ export default class subAdmin {
             const location = { type: 'Point', coordinates: [lon, lat] };
 
             const device = await Device.create({
-                organization: req.user,
+                organization,
                 staff,
                 setupId,
                 name: deviceName,
@@ -114,15 +122,16 @@ export default class subAdmin {
 
     getDeviceCount: Base = async (req, res, next) => {
         try {
-            // const devices = await Device.countDocuments();
-            const staffs = await Staff.find({ organization: req.user._id }).select('_id');
-            const staffIds = staffs.map((staff) => staff._id);
+            const devices = await Device.countDocuments({ organization: req.user._id });
+            // const staffs = await Staff.find({ organization: req.user._id }).select('_id');
+            // const staffIds = staffs.map((staff) => staff._id);
 
-            const devices = await Device.find({ staff: { $in: staffIds } });
-            const count = devices.length;
+            // const devices = await Device.find({ staff: { $in: staffIds } });
+            // const count = devices.length;
+
             res.status(200).json({
                 status: 'success',
-                devices: count,
+                devices,
             });
         } catch (err) {
             console.log(err);
@@ -226,13 +235,79 @@ export default class subAdmin {
 
     getDevices: Base = async (req, res) => {
         try {
-            const staffs = await Staff.find({ organization: req.user._id }).select('_id');
-            const staffIds = staffs.map((staff) => staff._id);
+            // const staffs = await Staff.find({ organization: req.user._id }).select('_id');
+            // const staffIds = staffs.map((staff) => staff._id);
 
-            const devices = await Device.find({ staff: { $in: staffIds } });
+            // const devices = await Device.find({ staff: { $in: staffIds } });
+
+            const devices = await Device.find({ organization: req.user._id });
+            if (!devices) return res.status(400).json('No devices found');
+            res.status(200).json({
+                status: 'success',
+                count: devices.length,
+                devices,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
+    staffCount: Base = async (req, res) => {
+        try {
+            const staffs = await Staff.countDocuments({ organization: req.user._id });
+            if (!staffs) return res.status(404).json('Staffs not found');
+            res.status(200).json({
+                status: 'success',
+                staffs,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
+    ongoingMaintenance: Base = async (req, res) => {
+        try {
+            const devices = await Request.countDocuments({
+                organization: req.user._id,
+                status: 'ongoing',
+            });
+            if (!devices) return res.status(404).json('Devices not found');
             res.status(200).json({
                 status: 'success',
                 devices,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
+    getRequest: Base = async (req, res) => {
+        try {
+            const { _id } = req.user;
+            const { status } = req.body;
+            let requests;
+
+            if (!status) {
+                requests = await Request.find({ organization: _id }).sort({
+                    updatedAt: -1,
+                });
+            }
+
+            if (status) {
+                requests = await Request.find({ organization: _id, status: status }).sort({
+                    updatedAt: -1,
+                });
+            }
+
+            if (!requests || requests.length === 0)
+                return res.status(404).json('No requests found');
+
+            res.status(200).json({
+                status: 'success',
+                requests,
             });
         } catch (err) {
             console.log(err);

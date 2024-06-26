@@ -28,11 +28,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const staffModel_1 = __importDefault(require("./staffModel"));
+const orgModel_1 = __importDefault(require("./orgModel"));
 const deviceSchema = new mongoose_1.Schema({
+    organization: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: orgModel_1.default,
+        requred: [true, 'organization info must be provided'],
+    },
     staff: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: staffModel_1.default,
-        requred: [true, 'staff info must be provided'],
     },
     name: { type: String },
     setupId: { type: String, required: [true, 'provide setup id'] },

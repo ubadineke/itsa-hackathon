@@ -58,7 +58,10 @@ class StaffController {
                     device,
                 });
             }
-            catch (err) { }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
         });
         this.makeMaintenanceRequest = (req, res) => __awaiter(this, void 0, void 0, function* () {
             var _a;
@@ -73,6 +76,7 @@ class StaffController {
                     return res.status(400).json('No technicians found');
                 const sendEmail = new email_1.default();
                 const request = yield requestModel_1.default.create({
+                    organization: req.user.organization,
                     staff: req.user,
                     device,
                     description,
