@@ -11,7 +11,7 @@ router.use(Auth.protect('staff'));
 router.get('/device-count', Staff.deviceCount);
 router.get('/devices', Staff.listDevices);
 router.get('/device/:id', Staff.getSingleDevice);
-router.post('/maintenance', Staff.makeMaintenanceRequest);
+router.route('/maintenance').post(Staff.makeMaintenanceRequest).get(Staff.getMaintenanceRequests);
 router.route('/profile').get(Staff.getProfile).patch(Staff.updateProfile);
-
+router.get('/maintenance-count', Staff.getMaintenanceCount);
 export default router;

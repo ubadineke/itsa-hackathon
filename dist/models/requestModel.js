@@ -39,7 +39,6 @@ const requestSchema = new mongoose_1.Schema({
     staff: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: staffModel_1.default,
-        required: [true, 'Please provide staff'],
     },
     device: {
         type: mongoose_1.default.Schema.Types.ObjectId,

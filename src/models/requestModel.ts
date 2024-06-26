@@ -14,7 +14,6 @@ const requestSchema = new Schema<IRequest>(
         staff: {
             type: mongoose.Schema.Types.ObjectId,
             ref: Staff,
-            required: [true, 'Please provide staff'],
         },
         device: {
             type: mongoose.Schema.Types.ObjectId,

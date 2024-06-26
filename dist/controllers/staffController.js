@@ -128,6 +128,61 @@ class StaffController {
                 res.status(500).json(err);
             }
         });
+        this.getMaintenanceCount = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status } = req.body;
+                let requests;
+                if (status) {
+                    if (status === 'ongoing') {
+                        requests = yield requestModel_1.default.countDocuments({
+                            status: 'ongoing',
+                        });
+                        console.log('1');
+                    }
+                }
+                else {
+                    requests = yield requestModel_1.default.countDocuments({ staff: req.user._id });
+                }
+                if (!requests)
+                    return res.status(404).json('No requests found');
+                res.status(200).json({
+                    status: 'success',
+                    requests,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.getMaintenanceRequests = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { _id } = req.user;
+                const { status } = req.body;
+                let requests;
+                if (!status) {
+                    requests = yield requestModel_1.default.find({ staff: _id }).sort({
+                        updatedAt: -1,
+                    });
+                }
+                if (status) {
+                    requests = yield requestModel_1.default.find({ staff: _id, status: status }).sort({
+                        updatedAt: -1,
+                    });
+                }
+                if (!requests || requests.length === 0)
+                    return res.status(404).json('No requests found');
+                res.status(200).json({
+                    status: 'success',
+                    count: requests.length,
+                    requests,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
         //get requests based on that staff
         //get them by status of request
         //count of the requests so far

@@ -116,6 +116,63 @@ export default class StaffController {
             res.status(500).json(err);
         }
     };
+
+    getMaintenanceCount: Base = async (req, res) => {
+        try {
+            const { status } = req.body;
+            let requests;
+            if (status) {
+                if (status === 'ongoing') {
+                    requests = await Request.countDocuments({
+                        status: 'ongoing',
+                    });
+                    console.log('1');
+                }
+            } else {
+                requests = await Request.countDocuments({ staff: req.user._id });
+            }
+            if (!requests) return res.status(404).json('No requests found');
+            res.status(200).json({
+                status: 'success',
+                requests,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+    getMaintenanceRequests: Base = async (req, res) => {
+        try {
+            const { _id } = req.user;
+            const { status } = req.body;
+            let requests;
+
+            if (!status) {
+                requests = await Request.find({ staff: _id }).sort({
+                    updatedAt: -1,
+                });
+            }
+
+            if (status) {
+                requests = await Request.find({ staff: _id, status: status }).sort({
+                    updatedAt: -1,
+                });
+            }
+
+            if (!requests || requests.length === 0)
+                return res.status(404).json('No requests found');
+
+            res.status(200).json({
+                status: 'success',
+                count: requests.length,
+                requests,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
     //get requests based on that staff
     //get them by status of request
     //count of the requests so far
