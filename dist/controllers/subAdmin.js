@@ -102,6 +102,7 @@ class subAdmin {
                 console.log(device);
                 res.status(200).json({
                     status: 'success',
+                    message: 'System information sent successfully',
                     device,
                 });
             }
@@ -163,8 +164,11 @@ class subAdmin {
         this.deleteStaff = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                yield staffModel_1.default.findByIdAndDelete(id);
-                res.status(204).send;
+                const device = yield staffModel_1.default.findByIdAndDelete(id);
+                if (!device) {
+                    return res.status(404).json('Device not found');
+                }
+                return res.status(204).send();
             }
             catch (err) {
                 console.log(err);

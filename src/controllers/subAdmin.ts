@@ -93,6 +93,7 @@ export default class subAdmin {
             console.log(device);
             res.status(200).json({
                 status: 'success',
+                message: 'System information sent successfully',
                 device,
             });
         } catch (err) {
@@ -153,8 +154,11 @@ export default class subAdmin {
     deleteStaff: Base = async (req, res) => {
         try {
             const { id } = req.params;
-            await Staff.findByIdAndDelete(id);
-            res.status(204).send;
+            const device = await Staff.findByIdAndDelete(id);
+            if (!device) {
+                return res.status(404).json('Device not found');
+            }
+            return res.status(204).send();
         } catch (err) {
             console.log(err);
             res.status(500).json(err);

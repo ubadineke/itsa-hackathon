@@ -9,11 +9,8 @@ const subAdmin = new subAdministrator();
 router.post('/register-device', subAdmin.collectInfo);
 
 router.use(Auth.protect('sub-admin'));
-router
-    .route('/staffs')
-    .post(subAdmin.createStaff)
-    .get(subAdmin.getAllStaffs)
-    .delete(subAdmin.deleteStaff);
+router.route('/staffs').post(subAdmin.createStaff).get(subAdmin.getAllStaffs);
+router.delete('/staffs/:id', subAdmin.deleteStaff);
 router.post('/new-request', subAdmin.newDeviceRequest);
 router.get('/setup-status/:setupId', subAdmin.setupStatus);
 router.get('/enrolled-devices', subAdmin.getDeviceCount);
