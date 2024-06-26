@@ -44,12 +44,23 @@ export default class subAdmin {
 
     newDeviceRequest: Base = async (req, res, next) => {
         try {
-            const { email } = req.body;
+            const { user, email } = req.body;
             const randomString = crypto.randomBytes(10).toString('hex').slice(0, 10);
-            const staff = await Staff.findOne({ email });
-            if (!staff) return res.status(400).json('No staff with that email found');
-            staff.requestToken = randomString;
-            await staff.save();
+            if (user === 'organization') {
+                const staff = await Staff.findOne({ email });
+                if (!staff) return res.status(400).json('No staff with that email found');
+                staff.requestToken = randomString;
+                await staff.save();
+            } else if (user === 'staff') {
+                const organization = await Organization.findOne({ email });
+                if (!organization)
+                    return res.status(400).json('No organization with that email found');
+                organization.requestToken = randomString;
+                await organization.save();
+            } else {
+                return res.status(400).json('Provide correct user type ');
+            }
+
             res.status(200).json({
                 status: 'success',
                 setupId: randomString,
@@ -70,15 +81,14 @@ export default class subAdmin {
             const count = await Device.countDocuments({ staff: staff._id });
             let randomString = crypto.randomBytes(5).toString('hex').slice(0, 5);
             randomString = randomString.toUpperCase();
-
             const deviceName = `Device ${count + 1}${randomString}`;
-            // return console.log(deviceName);
             if (staff.requestToken !== setupId)
-                return res.status(400).json('Setup id not correct or not recorded');
+                return res.status(400).json('Setup id not correct or recorded');
 
             const location = { type: 'Point', coordinates: [lon, lat] };
 
             const device = await Device.create({
+                organization: req.user,
                 staff,
                 setupId,
                 name: deviceName,
@@ -98,7 +108,7 @@ export default class subAdmin {
             });
         } catch (err) {
             console.log(err);
-            res.status(500).json(err);
+            res.status(500).json('Error occurred adding a device, try again!');
         }
     };
 

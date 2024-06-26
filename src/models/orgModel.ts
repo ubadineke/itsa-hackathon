@@ -33,6 +33,9 @@ const organizationSchema = new Schema<IOrganization>(
             enum: ['sub-admin'],
             default: 'sub-admin',
         },
+        requestToken: {
+            type: String,
+        },
     },
     { timestamps: true }
 );

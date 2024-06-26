@@ -15,6 +15,7 @@ export interface IOrganization extends Document {
     phone: string;
     password: string;
     role: string;
+    requestToken: string;
     correctPassword(incomingPassword: string, storedPassword: string): Promise<boolean>;
 }
 
@@ -54,6 +55,7 @@ export interface ITechnician extends Document {
 }
 
 export interface IDevice extends Document {
+    organization: ObjectId;
     staff: ObjectId;
     name: string;
     setupId: string;

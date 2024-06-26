@@ -1,13 +1,18 @@
 import mongoose, { model, Document, Schema } from 'mongoose';
 import Staff from './staffModel';
+import Organization from './orgModel';
 import { IDevice } from '../interfaces';
 
 const deviceSchema = new Schema<IDevice>(
     {
+        organization: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: Organization,
+            requred: [true, 'organization info must be provided'],
+        },
         staff: {
             type: mongoose.Schema.Types.ObjectId,
             ref: Staff,
-            requred: [true, 'staff info must be provided'],
         },
         name: { type: String },
         setupId: { type: String, required: [true, 'provide setup id'] },

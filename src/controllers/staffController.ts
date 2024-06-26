@@ -44,7 +44,10 @@ export default class StaffController {
                 status: 'success',
                 device,
             });
-        } catch (err) {}
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
     };
     makeMaintenanceRequest: Base = async (req, res) => {
         try {
