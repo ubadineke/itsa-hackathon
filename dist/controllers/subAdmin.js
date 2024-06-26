@@ -67,7 +67,7 @@ class subAdmin {
                     yield staff.save();
                 }
                 else if (user === 'organization') {
-                    const organization = yield orgModel_1.default.findOne({ email });
+                    const organization = yield orgModel_1.default.findOne({ email: req.user.email });
                     if (!organization)
                         return res.status(400).json('No organization with that email found');
                     organization.requestToken = randomString;

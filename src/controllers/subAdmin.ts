@@ -53,7 +53,7 @@ export default class subAdmin {
                 staff.requestToken = randomString;
                 await staff.save();
             } else if (user === 'organization') {
-                const organization = await Organization.findOne({ email });
+                const organization = await Organization.findOne({ email: req.user.email });
                 if (!organization)
                     return res.status(400).json('No organization with that email found');
                 organization.requestToken = randomString;
