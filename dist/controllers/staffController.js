@@ -130,15 +130,13 @@ class StaffController {
         });
         this.getMaintenanceCount = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { status } = req.body;
+                const { status } = req.query;
                 let requests;
                 if (status) {
-                    if (status === 'ongoing') {
-                        requests = yield requestModel_1.default.countDocuments({
-                            status: 'ongoing',
-                        });
-                        console.log('1');
-                    }
+                    requests = yield requestModel_1.default.countDocuments({
+                        staff: req.user._id,
+                        status: status,
+                    });
                 }
                 else {
                     requests = yield requestModel_1.default.countDocuments({ staff: req.user._id });

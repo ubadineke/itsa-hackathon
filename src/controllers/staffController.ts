@@ -119,15 +119,13 @@ export default class StaffController {
 
     getMaintenanceCount: Base = async (req, res) => {
         try {
-            const { status } = req.body;
+            const { status } = req.query;
             let requests;
             if (status) {
-                if (status === 'ongoing') {
-                    requests = await Request.countDocuments({
-                        status: 'ongoing',
-                    });
-                    console.log('1');
-                }
+                requests = await Request.countDocuments({
+                    staff: req.user._id,
+                    status: status,
+                });
             } else {
                 requests = await Request.countDocuments({ staff: req.user._id });
             }
