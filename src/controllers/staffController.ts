@@ -143,6 +143,7 @@ export default class StaffController {
     };
     getMaintenanceRequests: Base = async (req, res) => {
         try {
+            console.log(req.body);
             const { _id } = req.user;
             const { status } = req.body;
             let requests;

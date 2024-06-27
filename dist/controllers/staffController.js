@@ -157,6 +157,7 @@ class StaffController {
         });
         this.getMaintenanceRequests = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log(req.body);
                 const { _id } = req.user;
                 const { status } = req.body;
                 let requests;
