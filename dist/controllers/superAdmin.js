@@ -43,6 +43,7 @@ class SuperAdminController {
                     status: 'success',
                     email,
                     password,
+                    technician,
                 });
             }
             catch (err) {

@@ -34,6 +34,7 @@ export default class SuperAdminController {
                 status: 'success',
                 email,
                 password,
+                technician,
             });
         } catch (err) {
             console.log(err);
