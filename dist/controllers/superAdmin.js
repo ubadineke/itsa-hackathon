@@ -52,7 +52,7 @@ class SuperAdminController {
         });
         this.organizations = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { count } = req.body;
+                const { count } = req.query;
                 let organizations;
                 if (count === 'yes') {
                     organizations = yield orgModel_1.default.countDocuments();
@@ -74,7 +74,7 @@ class SuperAdminController {
         });
         this.staffs = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { count } = req.body;
+                const { count } = req.query;
                 let staffs;
                 if (count === 'yes') {
                     staffs = yield staffModel_1.default.countDocuments();
@@ -96,7 +96,7 @@ class SuperAdminController {
         });
         this.technicians = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { count } = req.body;
+                const { count } = req.query;
                 let technicians;
                 if (count === 'yes') {
                     technicians = yield technicianModel_1.default.countDocuments();
@@ -118,7 +118,7 @@ class SuperAdminController {
         });
         this.devices = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { count } = req.body;
+                const { count } = req.query;
                 let devices;
                 if (count === 'yes') {
                     devices = yield deviceModel_1.default.countDocuments();

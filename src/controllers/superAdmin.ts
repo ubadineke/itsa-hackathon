@@ -43,7 +43,7 @@ export default class SuperAdminController {
 
     organizations: Base = async (req, res, next) => {
         try {
-            const { count } = req.body;
+            const { count } = req.query;
             let organizations;
             if (count === 'yes') {
                 organizations = await Organization.countDocuments();
@@ -63,7 +63,7 @@ export default class SuperAdminController {
 
     staffs: Base = async (req, res) => {
         try {
-            const { count } = req.body;
+            const { count } = req.query;
             let staffs;
             if (count === 'yes') {
                 staffs = await Staff.countDocuments();
@@ -83,7 +83,7 @@ export default class SuperAdminController {
 
     technicians: Base = async (req, res) => {
         try {
-            const { count } = req.body;
+            const { count } = req.query;
             let technicians;
             if (count === 'yes') {
                 technicians = await Technician.countDocuments();
@@ -103,7 +103,7 @@ export default class SuperAdminController {
 
     devices: Base = async (req, res) => {
         try {
-            const { count } = req.body;
+            const { count } = req.query;
             let devices;
             if (count === 'yes') {
                 devices = await Device.countDocuments();
