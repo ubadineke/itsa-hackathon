@@ -162,17 +162,23 @@ class StaffController {
                 const { status } = req.body;
                 let requests;
                 if (!status) {
+                    console.log(1);
                     requests = yield requestModel_1.default.find({ staff: _id }).sort({
                         updatedAt: -1,
                     });
+                    console.log(4);
                 }
+                console.log(_id);
                 if (status) {
+                    console.log(2);
                     requests = yield requestModel_1.default.find({ staff: _id, status: status }).sort({
                         updatedAt: -1,
                     });
+                    console.log(3);
                 }
                 if (!requests || requests.length === 0)
                     return res.status(404).json('No requests found');
+                console.log(requests.length);
                 res.status(200).json({
                     status: 'success',
                     count: requests.length,
