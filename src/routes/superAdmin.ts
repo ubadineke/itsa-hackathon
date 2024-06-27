@@ -8,10 +8,10 @@ const router = Router();
 const SuperAdmin = new SuperAdminController();
 
 router.use(Auth.protect('super-admin'));
-router.post('/technician', SuperAdmin.createTechnician);
 router.get('/organizations', SuperAdmin.organizations);
-router.get('/staff/:id', SuperAdmin.staffs);
-router.route('/technicians').get(SuperAdmin.technicians);
+router.get('/staffs', SuperAdmin.staffs);
+router.route('/technicians').post(SuperAdmin.createTechnician).get(SuperAdmin.technicians);
+router.get('/devices', SuperAdmin.staffs);
 router;
 
 export default router;

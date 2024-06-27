@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const orgModel_1 = __importDefault(require("../models/orgModel"));
 const staffModel_1 = __importDefault(require("../models/staffModel"));
 const technicianModel_1 = __importDefault(require("../models/technicianModel"));
+const deviceModel_1 = __importDefault(require("../models/deviceModel"));
 const geo_1 = __importDefault(require("../utils/geo"));
 const randomString_1 = __importDefault(require("../utils/randomString"));
 class SuperAdminController {
@@ -51,7 +52,14 @@ class SuperAdminController {
         });
         this.organizations = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const organizations = yield orgModel_1.default.find();
+                const { count } = req.body;
+                let organizations;
+                if (count === 'yes') {
+                    organizations = yield orgModel_1.default.countDocuments();
+                }
+                else {
+                    organizations = yield orgModel_1.default.find();
+                }
                 if (!organizations)
                     return res.status(404).json('No organizations found');
                 res.status(200).json({
@@ -66,8 +74,14 @@ class SuperAdminController {
         });
         this.staffs = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { id } = req.params;
-                const staffs = yield staffModel_1.default.find({ organization: id });
+                const { count } = req.body;
+                let staffs;
+                if (count === 'yes') {
+                    staffs = yield staffModel_1.default.countDocuments();
+                }
+                else {
+                    staffs = yield staffModel_1.default.find();
+                }
                 if (!staffs)
                     return res.status(404).json('No staffs found');
                 res.status(200).json({
@@ -82,12 +96,41 @@ class SuperAdminController {
         });
         this.technicians = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const technicians = yield technicianModel_1.default.find().select('-location');
+                const { count } = req.body;
+                let technicians;
+                if (count === 'yes') {
+                    technicians = yield technicianModel_1.default.countDocuments();
+                }
+                else {
+                    technicians = yield technicianModel_1.default.find().select('-location');
+                }
                 if (!technicians)
                     return res.status(404).json('Technicians not found');
                 res.status(200).json({
                     status: 'success',
                     technicians,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.devices = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { count } = req.body;
+                let devices;
+                if (count === 'yes') {
+                    devices = yield deviceModel_1.default.countDocuments();
+                }
+                else {
+                    devices = yield deviceModel_1.default.find().select('-location');
+                }
+                if (!devices)
+                    return res.status(404).json('Device not found');
+                res.status(200).json({
+                    status: 'success',
+                    devices,
                 });
             }
             catch (err) {
