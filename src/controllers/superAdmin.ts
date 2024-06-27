@@ -5,6 +5,7 @@ import Technician from '../models/technicianModel';
 import Device from '../models/deviceModel';
 import Geo from '../utils/geo';
 import randomString from '../utils/randomString';
+import Request from '../models/requestModel';
 
 export default class SuperAdminController {
     //create technician
@@ -115,6 +116,26 @@ export default class SuperAdminController {
             res.status(200).json({
                 status: 'success',
                 devices,
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    };
+
+    requests: Base = async (req, res) => {
+        try {
+            const { count } = req.query;
+            let requests;
+            if (count === 'yes') {
+                requests = await Request.countDocuments();
+            } else {
+                requests = await Request.find();
+            }
+            if (!requests) return res.status(404).json('Requests not found');
+            res.status(200).json({
+                status: 'success',
+                requests,
             });
         } catch (err) {
             console.log(err);

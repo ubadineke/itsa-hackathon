@@ -18,6 +18,7 @@ const technicianModel_1 = __importDefault(require("../models/technicianModel"));
 const deviceModel_1 = __importDefault(require("../models/deviceModel"));
 const geo_1 = __importDefault(require("../utils/geo"));
 const randomString_1 = __importDefault(require("../utils/randomString"));
+const requestModel_1 = __importDefault(require("../models/requestModel"));
 class SuperAdminController {
     constructor() {
         //create technician
@@ -132,6 +133,28 @@ class SuperAdminController {
                 res.status(200).json({
                     status: 'success',
                     devices,
+                });
+            }
+            catch (err) {
+                console.log(err);
+                res.status(500).json(err);
+            }
+        });
+        this.requests = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { count } = req.query;
+                let requests;
+                if (count === 'yes') {
+                    requests = yield requestModel_1.default.countDocuments();
+                }
+                else {
+                    requests = yield requestModel_1.default.find();
+                }
+                if (!requests)
+                    return res.status(404).json('Requests not found');
+                res.status(200).json({
+                    status: 'success',
+                    requests,
                 });
             }
             catch (err) {

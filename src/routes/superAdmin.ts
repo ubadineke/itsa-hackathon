@@ -12,6 +12,7 @@ router.get('/organizations', SuperAdmin.organizations);
 router.get('/staffs', SuperAdmin.staffs);
 router.route('/technicians').post(SuperAdmin.createTechnician).get(SuperAdmin.technicians);
 router.get('/devices', SuperAdmin.devices);
+router.get('/maintenance', SuperAdmin.requests);
 router;
 
 export default router;
