@@ -93,6 +93,7 @@ class StaffController {
                 res.status(200).json({
                     status: 'success',
                     request,
+                    technician,
                 });
             }
             catch (err) {

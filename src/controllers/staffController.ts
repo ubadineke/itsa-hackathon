@@ -81,6 +81,7 @@ export default class StaffController {
             res.status(200).json({
                 status: 'success',
                 request,
+                technician,
             });
         } catch (err) {
             console.log(err);
