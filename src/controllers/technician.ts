@@ -7,17 +7,28 @@ export default class TechnicianController {
         try {
             const { _id } = req.user;
             const { status } = req.body;
-            console.log(status);
+            const { type } = req.query;
             let requests;
-
-            if (!status) {
-                requests = await Request.find({ technician: _id }).sort({
+            if (type) {
+                if (type === 'pending') {
+                    requests = await Request.countDocuments({ status: 'pending' });
+                } else if (type === 'ongoing') {
+                    requests = await Request.countDocuments({ status: 'ongoing' });
+                } else if (type === 'done') {
+                    requests = await Request.countDocuments({ status: 'done' });
+                }
+                return res.status(200).json({
+                    status: 'success',
+                    requests,
+                });
+            } else if (status) {
+                requests = await Request.find({ technician: _id, status: status }).sort({
                     createdAt: 1,
                 });
             }
 
-            if (status) {
-                requests = await Request.find({ technician: _id, status: status }).sort({
+            if (!status) {
+                requests = await Request.find({ technician: _id }).sort({
                     createdAt: 1,
                 });
             }

@@ -12,6 +12,7 @@ export default class SuperAdminController {
         try {
             const { name, email, phone, state, lga } = req.body;
             const password = randomString(10);
+
             const coordinates = await Geo.getCoordinates(state, lga);
 
             const location = {

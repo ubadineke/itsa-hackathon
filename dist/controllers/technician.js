@@ -20,15 +20,30 @@ class TechnicianController {
             try {
                 const { _id } = req.user;
                 const { status } = req.body;
-                console.log(status);
+                const { type } = req.query;
                 let requests;
-                if (!status) {
-                    requests = yield requestModel_1.default.find({ technician: _id }).sort({
+                if (type) {
+                    if (type === 'pending') {
+                        requests = yield requestModel_1.default.countDocuments({ status: 'pending' });
+                    }
+                    else if (type === 'ongoing') {
+                        requests = yield requestModel_1.default.countDocuments({ status: 'ongoing' });
+                    }
+                    else if (type === 'done') {
+                        requests = yield requestModel_1.default.countDocuments({ status: 'done' });
+                    }
+                    return res.status(200).json({
+                        status: 'success',
+                        requests,
+                    });
+                }
+                else if (status) {
+                    requests = yield requestModel_1.default.find({ technician: _id, status: status }).sort({
                         createdAt: 1,
                     });
                 }
-                if (status) {
-                    requests = yield requestModel_1.default.find({ technician: _id, status: status }).sort({
+                if (!status) {
+                    requests = yield requestModel_1.default.find({ technician: _id }).sort({
                         createdAt: 1,
                     });
                 }
