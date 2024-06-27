@@ -7,5 +7,6 @@ const router = Router();
 const Auth = new AuthController();
 router.post('/signup', Auth.signup);
 router.post('/login', Auth.login);
+router.post('/ping', Auth.cronPing);
 
 export default router;

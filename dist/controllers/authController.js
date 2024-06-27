@@ -142,6 +142,9 @@ class AuthController {
                 }
             });
         };
+        this.cronPing = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            return res.send('Cron Did');
+        });
     }
 }
 exports.default = AuthController;

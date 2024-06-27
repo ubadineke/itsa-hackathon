@@ -10,4 +10,5 @@ const router = (0, express_1.Router)();
 const Auth = new authController_1.default();
 router.post('/signup', Auth.signup);
 router.post('/login', Auth.login);
+router.post('/ping', Auth.cronPing);
 exports.default = router;

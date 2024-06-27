@@ -159,7 +159,7 @@ class StaffController {
             try {
                 console.log(req.body);
                 const { _id } = req.user;
-                const { status } = req.body;
+                const { status } = req.params;
                 let requests;
                 if (!status) {
                     console.log(1);

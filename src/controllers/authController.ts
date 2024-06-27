@@ -142,4 +142,8 @@ export default class AuthController {
             }
         };
     };
+
+    public cronPing: Base = async (req, res) => {
+        return res.send('Cron Did');
+    };
 }
