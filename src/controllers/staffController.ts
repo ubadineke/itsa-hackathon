@@ -164,9 +164,12 @@ export default class StaffController {
                 console.log(3);
             }
 
-            if (!requests || requests.length === 0)
+            if (!requests || requests.length === 0) {
+                console.log(1);
                 return res.status(404).json('No requests found');
-            console.log(requests.length);
+            }
+            console.log('2', requests.length);
+
             res.status(200).json({
                 status: 'success',
                 count: requests.length,
